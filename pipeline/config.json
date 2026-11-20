@@ -1,0 +1,82 @@
+{
+  "brand": {
+    "name": "码尺",
+    "name_en": "CodeScale",
+    "tagline": "跨境选品数据台",
+    "version": "0.1.0"
+  },
+  "schedule": {
+    "timezone": "Asia/Shanghai",
+    "cron": "0 20 * * *",
+    "note": "每天 20:00 北京时间（巴西利亚时间 09:00 开盘后）跑一次"
+  },
+  "cost": {
+    "currency": "BRL",
+    "product": "穿戴甲 · 手工 · 10 片装",
+    "unit_weight_g": 20,
+    "purchase": 13.23,
+    "first_mile": 3.6,
+    "warehouse": 3.0,
+    "platform": 0.2278,
+    "ad": 0.1246,
+    "kol": 0.1169,
+    "tax": 0.0446,
+    "sfp": 0.06,
+    "fx_brl_to_cny": 1.32,
+    "source": "客户成本测算表 NA-001~010 均值 + D 2026-11-18 口述头程 180 BRL/kg x 20g",
+    "status": "表内测算，非实际发生"
+  },
+  "sources": [
+    {
+      "id": "kalodata",
+      "name": "Kalodata",
+      "kind": "file",
+      "enabled": true,
+      "markets": [
+        "BR"
+      ],
+      "dir": "pipeline/inbox",
+      "note": "无公开 API（api./open. 子域不解析），数据出口是网页导出 CSV。把文件放 pipeline/inbox/ 即自动读入"
+    },
+    {
+      "id": "tiktok_shop",
+      "name": "TikTok Shop",
+      "kind": "marketplace",
+      "enabled": false,
+      "markets": [
+        "BR"
+      ],
+      "note": "11-06 实测 23 次直连采集全败；需卖家授权或 Partner API"
+    },
+    {
+      "id": "shopee",
+      "name": "Shopee BR",
+      "kind": "marketplace",
+      "enabled": false,
+      "markets": [
+        "BR"
+      ],
+      "note": "11-06 实测列表页只返回 JS 壳；需 Open Platform 账号授权"
+    },
+    {
+      "id": "mercadolivre",
+      "name": "Mercado Livre",
+      "kind": "api",
+      "enabled": false,
+      "markets": [
+        "BR"
+      ],
+      "note": "11-19 实测：/sites/MLB 200，/sites/MLB/search 403 forbidden，需 access_token"
+    },
+    {
+      "id": "seed",
+      "name": "本地样本",
+      "kind": "file",
+      "enabled": true,
+      "markets": [
+        "BR"
+      ],
+      "note": "已落盘的公开索引样本，用于回放与口径校验"
+    }
+  ]
+}

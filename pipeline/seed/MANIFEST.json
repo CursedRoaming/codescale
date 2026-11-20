@@ -1,0 +1,23 @@
+{
+ "source": "github.com/yzz2525/FDE  (commit HEAD, 2026-11-14 clone)",
+ "purpose": "终版计算所用的市场数据快照；原始仓库 snapshot_at 全为空，此处以本地落盘时间作为可追溯凭证",
+ "files": {
+  "channel_observations.json": {
+   "bytes": 4153,
+   "md5": "60e5ec97b50a0389c7ecea3d9a731377"
+  },
+  "comment_summary.json": {
+   "bytes": 444,
+   "md5": "027d4eb5d40c15c7ea6a00b9a75e8322"
+  },
+  "crawl_log.json": {
+   "bytes": 5158,
+   "md5": "4dd7d7801fb29949733c21d4fafef976"
+  },
+  "market_expanded.json": {
+   "bytes": 49598,
+   "md5": "931099991c3248f4ea05f24c5320f684"
+  }
+ },
+ "snapshot_at": "2026-11-14 22:06"
+}

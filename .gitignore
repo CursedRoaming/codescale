@@ -1,0 +1,10 @@
+# 外部账号登记，含个人联系信息，不进公开仓库
+ACCOUNTS.md
+
+# 本地导出暂存，数据靠它进来但不该进版本库（体积大、可重下）
+pipeline/inbox/*.csv
+
+# Python
+__pycache__/
+*.pyc
+.DS_Store

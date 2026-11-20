@@ -1,0 +1,53 @@
+name: daily-reads
+
+# 每天北京时间 20:00（UTC 12:00）跑一次。
+# 巴西利亚时间此时是 09:00，客户上班第一件事就能看到新数据。
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:        # 也可以在网页上手动点一次
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-reads
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Kalodata 无公开 API，数据靠网页导出 CSV 后提交到 pipeline/inbox/。
+      # 所以这一步不需要任何密钥。inbox 空着也能跑，只是那一源会报 not_configured。
+      - name: 查看 inbox
+        run: |
+          mkdir -p pipeline/inbox
+          ls -la pipeline/inbox/ || true
+          echo "CSV 数量: $(ls -1 pipeline/inbox/*.csv 2>/dev/null | wc -l)"
+
+      # 先过测试再跑管线。管线算错不会报错，只会静默写出一组错数，
+      # 而那组数会当天就发到客户手上。这道门比回滚便宜。
+      - name: 跑测试
+        run: python -m unittest discover -s pipeline/tests -v
+
+      - name: 跑管线
+        run: python pipeline/run.py
+
+      - name: 提交当天快照与报告
+        run: |
+          git config user.name  "codescale-bot"
+          git config user.email "bot@codescale.local"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "没有变化，跳过提交"
+          else
+            git commit -m "data: $(date -u +%Y-%m-%d) 每日快照"
+            git push
+          fi
