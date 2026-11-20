@@ -684,6 +684,8 @@
     "net_low": 8.01,
     "net_high": 5.34,
     "net_swing": 2.67,
+    "net_full_low": -1.63,
+    "net_full_high": -4.3,
     "cny_purchase": 17.46
    },
    {
@@ -703,7 +705,9 @@
     "swing": 3.97,
     "net_low": 8.13,
     "net_high": 5.48,
-    "net_swing": 2.65
+    "net_swing": 2.65,
+    "net_full_low": -1.51,
+    "net_full_high": -4.15
    },
    {
     "label": "广告费率",
@@ -722,7 +726,9 @@
     "swing": 2.72,
     "net_low": 6.81,
     "net_high": 6.81,
-    "net_swing": 0.0
+    "net_swing": 0.0,
+    "net_full_low": -2.33,
+    "net_full_high": -3.33
    },
    {
     "label": "达人佣金",
@@ -741,7 +747,9 @@
     "swing": 2.55,
     "net_low": 6.81,
     "net_high": 6.81,
-    "net_swing": 0.0
+    "net_swing": 0.0,
+    "net_full_low": -2.36,
+    "net_full_high": -3.3
    },
    {
     "label": "平台佣金",
@@ -760,7 +768,9 @@
     "swing": 2.03,
     "net_low": 7.72,
     "net_high": 5.9,
-    "net_swing": 1.82
+    "net_swing": 1.82,
+    "net_full_low": -1.92,
+    "net_full_high": -3.74
    },
    {
     "label": "头程运费",
@@ -779,7 +789,9 @@
     "swing": 1.08,
     "net_low": 7.17,
     "net_high": 6.45,
-    "net_swing": 0.72
+    "net_swing": 0.72,
+    "net_full_low": -2.47,
+    "net_full_high": -3.19
    },
    {
     "label": "仓储费",
@@ -798,7 +810,9 @@
     "swing": 0.9,
     "net_low": 7.11,
     "net_high": 6.51,
-    "net_swing": 0.6
+    "net_swing": 0.6,
+    "net_full_low": -2.53,
+    "net_full_high": -3.13
    },
    {
     "label": "SFP 包邮",
@@ -817,7 +831,9 @@
     "swing": 0.53,
     "net_low": 7.05,
     "net_high": 6.57,
-    "net_swing": 0.48
+    "net_swing": 0.48,
+    "net_full_low": -2.59,
+    "net_full_high": -3.07
    },
    {
     "label": "税费",
@@ -836,7 +852,9 @@
     "swing": 0.39,
     "net_low": 6.99,
     "net_high": 6.63,
-    "net_swing": 0.36
+    "net_swing": 0.36,
+    "net_full_low": -2.65,
+    "net_full_high": -3.01
    }
   ],
   "top": "汇率",
@@ -850,7 +868,7 @@
   "version": "0.1.0",
   "schema": 1,
   "run_date": "2026-11-20",
-  "generated_at": "2026-11-20T12:29:30+08:00",
+  "generated_at": "2026-11-20T12:33:41+08:00",
   "data_date": "2026-11-06",
   "freshness_days": 14,
   "report_url": "reports/2026-11-20.html",

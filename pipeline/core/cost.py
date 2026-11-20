@@ -198,6 +198,10 @@ def sensitivity(m=None, step=0.10, anchor=39.90):
             'net_low': net(anchor, lo[0], lo[1]),
             'net_high': net(anchor, hi[0], hi[1]),
             'net_swing': round(abs(net(anchor, hi[0], hi[1]) - net(anchor, lo[0], lo[1])), 2),
+            # 只进投流口径的项（广告、达人）在不投流净利上不会有任何变化，
+            # 用它得出一排「+6.81 不变」等于告诉读者这项没影响，是错的。
+            'net_full_low': net(anchor, lo[0], lo[2]),
+            'net_full_high': net(anchor, hi[0], hi[2]),
         })
 
     for label, kind, key, in_org in DRIVERS:

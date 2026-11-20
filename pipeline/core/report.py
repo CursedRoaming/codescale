@@ -283,12 +283,14 @@ def render_html(p):
             full = r['scope'] == 'full'
             be_lo = r['be_full_low'] if full else r['be_org_low']
             be_hi = r['be_full_high'] if full else r['be_org_high']
+            n_lo = r['net_full_low'] if full else r['net_low']
+            n_hi = r['net_full_high'] if full else r['net_high']
             body += ('<tr><td>%s%s</td><td>%s</td><td>%s</td><td><b>%.2f</b></td>'
                      '<td class="%s">%s</td></tr>'
-                     % (r['label'], '（仅投流口径）' if full else '',
+                     % (r['label'], '（投流口径）' if full else '',
                         _pair(r['low'], r['high'], r['fmt']), _pair(be_lo, be_hi), r['swing'],
-                        'neg' if ((r['net_low'] or 0) < 0 or (r['net_high'] or 0) < 0) else 'pos',
-                        _pair_s(r['net_low'], r['net_high'])))
+                        'neg' if ((n_lo or 0) < 0 or (n_hi or 0) < 0) else 'pos',
+                        _pair_s(n_lo, n_hi)))
         rows_sens = ('<table><thead><tr><th>驱动项</th><th>该项 ±%d%%</th><th>保本价落在</th>'
                      '<th>摆幅</th><th>%s 时单件净利</th></tr></thead><tbody>%s</tbody></table>'
                      % (int(round(se['step'] * 100)), _brl(se['anchor']), body))

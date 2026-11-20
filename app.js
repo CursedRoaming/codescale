@@ -296,12 +296,14 @@ function sens(d) {
     const full = r.scope === 'full';
     const beLo = full ? r.be_full_low : r.be_org_low;
     const beHi = full ? r.be_full_high : r.be_org_high;
+    const nLo = full ? r.net_full_low : r.net_low;
+    const nHi = full ? r.net_full_high : r.net_high;
     return `<tr>
-      <td>${r.label}${full ? ' <span class="tag off">仅投流口径</span>' : ''}</td>
+      <td>${r.label}${full ? ' <span class="tag off">投流口径</span>' : ''}</td>
       <td style="color:#8b91a8">${pair(r.low, r.high, r.fmt)}</td>
       <td>${pair(beLo, beHi, 'brl')}</td>
       <td><b>${r.swing.toFixed(2)}</b></td>
-      <td class="${(r.net_low < 0 || r.net_high < 0) ? 'neg' : 'pos'}">${pairSigned(r.net_low, r.net_high)}</td>
+      <td class="${(nLo < 0 || nHi < 0) ? 'neg' : 'pos'}">${pairSigned(nLo, nHi)}</td>
     </tr>`;
   }).join('');
 
@@ -315,7 +317,7 @@ function sens(d) {
   $('sens-table').innerHTML = `
     <table><thead><tr>
       <th>驱动项</th><th>该项 ±${step}%</th>
-      <th>保本价落在（不投流）</th><th>摆幅</th>
+      <th>保本价落在</th><th>摆幅</th>
       <th>${BRL(s.anchor)} 时单件净利</th>
     </tr></thead><tbody>${rows}</tbody></table>
     <div class="legend" style="margin-top:10px">
