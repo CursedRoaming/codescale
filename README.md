@@ -107,18 +107,29 @@ pipeline/
 
 ---
 
-## 部署（两步，需要 GitHub 网页一次）
+## 部署（已完成，2026-11-20）
 
-仓库名建议 `codescale`，Pages 地址即 `https://<你的用户名>.github.io/codescale/`。
+线上地址：**https://cursedroaming.github.io/codescale/**
+仓库：`CursedRoaming/codescale`（公开），Pages 走 `main` 分支根目录，`legacy` 构建。
 
-1. 新建仓库，把本目录整个推上去（分支 `main`）
-2. Settings → Pages → Source 选 `Deploy from a branch`，分支 `main` / 根目录
+已完成的三步，留档备查：
 
-**不需要配置任何 Secret。** 因为 Kalodata 没有 API，管线不向任何外部服务认证，
+1. 建仓库 `codescale`，推 `main`
+2. Settings → Pages → Source: `Deploy from a branch`，`main` / 根目录
+3. `.nojekyll` 已在仓库里（不加它，下划线开头的路径会被 Jekyll 吞掉）
+
+**没有配置任何 Secret。** 因为 Kalodata 没有 API，管线不向任何外部服务认证，
 只读仓库里 `pipeline/inbox/` 的 CSV。早前那版写的 `KOLADATA_KEY` 已删掉，别再建。
 
-做完这两步，`daily.yml` 每天 20:00 自动跑，把 `data/` 与 `reports/` 的变更提交回去，
+`daily.yml` 每天 20:00（北京时间）自动跑，把 `data/` 与 `reports/` 的变更提交回去，
 Pages 自动重新发布。**不需要服务器。**
+
+两点要注意：
+
+- GitHub 对「60 天内仓库无提交」的定时任务会暂停。`daily.yml` 自己每天提交一次，
+  只要它还在跑就不会触发这条；一旦它被停，得手动点一次 `Run workflow` 唤醒。
+- Actions 里的运行日志是公开的。所以**不要把任何 CSV 原件、账号信息放进仓库**，
+  `ACCOUNTS.md` 与 `pipeline/inbox/*.csv` 已在 `.gitignore` 里。
 
 ---
 
