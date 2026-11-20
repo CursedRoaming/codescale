@@ -4,6 +4,9 @@ ACCOUNTS.md
 # 本地导出暂存，数据靠它进来但不该进版本库（体积大、可重下）
 pipeline/inbox/*.csv
 
+# 探查后台留下的截图与报告，只在本机看
+pipeline/tools/_probe/
+
 # Python
 __pycache__/
 *.pyc

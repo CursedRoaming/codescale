@@ -4,8 +4,12 @@
 
 一句话：**跑一遍，出一页行情看板加一份日报，数字从哪来能一条条查回去。**
 
-自动的那一半是真的：`.github/workflows/daily.yml` 每天 20:00 会跑完并提交。
-但**数据不会自己进来**——Kalodata 没有公开 API（见下），CSV 得有人放。
+自动的那一半是真的：`.github/workflows/daily.yml` 每天 20:00 会跑完并提交，线上页面随仓库自动更新。
+
+但**数据不会自己进来**。Kalodata 没有公开 API，唯一出口是网页上的导出按钮。
+所以自动取数只有一条路：用浏览器带着登录后的会话，去点那个导出。这条路的第一段已经搭好
+（`pipeline/tools/`，登录一次、存会话），第二段要看过真实后台结构才能写，见下面「自动取数」。
+
 这两件事必须分开说，不然会以为配好了就万事大吉。
 
 这是独立于 `紫竹/FDE` 新建的一套东西。取了她那套东西的**口径与页面语感**，没有取她的代码——
@@ -65,13 +69,41 @@ pipeline/
   sources/seed.py                    本地样本（当前唯一有数的一路）
   sources/kalodata.py                Kalodata CSV 导入（inbox/）
   tests/test_kalodata.py             CSV 导入：数字格式、表头、错位行
-  tests/test_metrics.py              链接判定、变化检测、规模刻度
+  tests/test_metrics.py              链接判定、变化检测、规模刻度、敏感性
   sources/marketplaces.py            TK / Shopee / 美客多（未接入，原因写死）
   seed/market_expanded.json          75 条公开样本，随仓库走，保证克隆即可跑
   inbox/                             Kalodata 导出的 CSV 放这里，丢文件即读
     README.md                        导出怎么选格式、认哪些表头、会丢什么
+  tools/kalodata_login.py            登录一次，把会话存到本机（不存密码）
+  tools/kalodata_probe.py            用会话摸后台结构：菜单、导出按钮、表头
 .github/workflows/daily.yml          每天 20:00 北京时间自动跑并提交
 ```
+
+---
+
+## 自动取数（Kalodata，进行中）
+
+目标：账号给一次，之后每天自己拉，不用人动手。现实约束是它没有 API，
+所以只能让浏览器带着**已登录的会话**去点导出。分三步：
+
+1. `python pipeline/tools/kalodata_login.py`
+   浏览器会打开，你在里面登录，回来按回车。会话存到
+   `~/.workbuddy/secrets/kalodata/state.json`。**密码不存、不传、不写进任何文件。**
+2. `python pipeline/tools/kalodata_probe.py`
+   用这份会话进后台，把菜单、导出按钮文案、表头结构打到
+   `pipeline/tools/_probe/report.txt`，并截一张首页图。
+3. 我按第 2 步的实测结构写正式适配器 `sources/kalodata_live.py`，
+   由管线每天调用：带会话 → 打开商品页 → 点导出 → 等下载 → 落进 `inbox/`。
+
+**第 3 步还没写，因为还没看过真实后台。** 猜着写选择器，第一次跑会静默拿不到文件，
+比报错更难查。所以先探再写。
+
+会话失效时会拿到登录页，状态会变成 `blocked` 并写进「数据源健康」面板，
+不会静默交一份空数据出来。那时候重跑第 1 步即可。
+
+> Actions 上跑不了有头浏览器，也拿不到你本机的会话。所以这条自动链跑在**本机**
+> （Windows 任务计划或你手动跑一次），跑完 `git push`，网页那边自动更新。
+> GitHub 那台机器只负责发布，不负责登录。
 
 ---
 

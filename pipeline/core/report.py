@@ -260,7 +260,45 @@ def render_html(p):
                      '<tbody>%s</tbody></table>' % (th_t, body))
         scale_lead = _scale_lead(sc)
 
-    # 六、异动
+    # 六、敏感性
+    se = p.get('sensitivity') or {}
+    rows_sens, sens_lead = '', ''
+    if se.get('rows'):
+        def _pair(a, b, fmt='brl'):
+            if a is None or b is None:
+                return '--'
+            one = (lambda x: '¥%.2f' % x) if fmt == 'fx' else (
+                (lambda x: '%.2f%%' % (x * 100)) if fmt == 'rate' else _brl)
+            lo, hi = min(a, b), max(a, b)
+            return one(lo) if lo == hi else '%s – %s' % (one(lo), one(hi))
+
+        def _pair_s(a, b):
+            if a is None or b is None:
+                return '--'
+            lo, hi = min(a, b), max(a, b)
+            return _signed(lo) if lo == hi else '%s – %s' % (_signed(lo), _signed(hi))
+
+        body = ''
+        for r in se['rows']:
+            full = r['scope'] == 'full'
+            be_lo = r['be_full_low'] if full else r['be_org_low']
+            be_hi = r['be_full_high'] if full else r['be_org_high']
+            body += ('<tr><td>%s%s</td><td>%s</td><td>%s</td><td><b>%.2f</b></td>'
+                     '<td class="%s">%s</td></tr>'
+                     % (r['label'], '（仅投流口径）' if full else '',
+                        _pair(r['low'], r['high'], r['fmt']), _pair(be_lo, be_hi), r['swing'],
+                        'neg' if ((r['net_low'] or 0) < 0 or (r['net_high'] or 0) < 0) else 'pos',
+                        _pair_s(r['net_low'], r['net_high'])))
+        rows_sens = ('<table><thead><tr><th>驱动项</th><th>该项 ±%d%%</th><th>保本价落在</th>'
+                     '<th>摆幅</th><th>%s 时单件净利</th></tr></thead><tbody>%s</tbody></table>'
+                     % (int(round(se['step'] * 100)), _brl(se['anchor']), body))
+        top = se['rows'][0]
+        sens_lead = ('单看摆幅，最大的一项是 <b>%s</b>，动 %d%% 就让每副的保本线挪 %s。'
+                     '但摆幅最大不等于最该动：汇率是被动风险，砍不动；'
+                     '采购价是唯一既动得大又谈得下来的。想降价，先谈采购，再谈头程，最后才是费率。'
+                     % (top['label'], int(round(se['step'] * 100)), _brl(top['swing'])))
+
+    # 七、异动
     if p['movers']:
         rows_mv = ('<table><thead><tr><th>商品</th><th>平台</th><th>上一版</th><th>本版</th><th>变动</th>'
                    '</tr></thead><tbody>'
@@ -325,11 +363,18 @@ def render_html(p):
 <b>这是刻度，不是预测。</b>单量是假设出来的横轴，不含退货、滞销、平台活动亏损与汇率波动。
 它回答「卖到这个量，账上是什么样」，不回答「能不能卖到这个量」。</div>
 
-<h2>六、价格异动</h2>
+<h2>六、成本敏感性</h2>
+<div class="lead">%(sens_lead)s</div>
+%(rows_sens)s
+<div class="lead" style="margin-top:12px;color:#8a5200">
+<b>摆幅不能相加。</b>汇率与采购是同一笔钱的两个视角，两项同时动不等于两数相加。
+这是排优先级用的尺子，不是预测。</div>
+
+<h2>七、价格异动</h2>
 <div class="lead">与上一版快照比较，变动绝对值 ≥ R$0.50 的记录。</div>
 %(rows_mv)s
 
-<h2>七、数据可靠性</h2>
+<h2>八、数据可靠性</h2>
 <div class="lead">每路源的真实状态。状态是事实，不是故障报告。</div>
 %(srcs)s
 <div class="foot">
@@ -352,6 +397,7 @@ def render_html(p):
         'rows_spec': rows_spec, 'rows_tier': rows_tier, 'rows_e': rows_e,
         'rows_mv': rows_mv, 'srcs': srcs,
         'rows_sc': rows_sc, 'rows_need': rows_need, 'scale_lead': scale_lead,
+        'rows_sens': rows_sens, 'sens_lead': sens_lead,
         'status': c['status'], 'fx': c['fx'], 'run_at': p['meta']['generated_at'],
     }
 
@@ -368,6 +414,11 @@ def render_md(p):
     L.append('样本 %d 条（去重后），观测日 %s。' % (p['n'], '、'.join(p['observed_dates']) or '--'))
     L.append('全样本中位 %s；到仓成本 %s。' % (_brl(p['median']), _brl(c['fixed'])))
     L.append('不投流保本 %s，投流保本 %s。' % (_brl(c['be_org']), _brl(c['be_full'])))
+    se = p.get('sensitivity') or {}
+    if se.get('rows'):
+        top = se['rows'][0]
+        L.append('成本里最敏感的是%s：单独动 %d%%，保本线挪 %s。'
+                 % (top['label'], int(round(se['step'] * 100)), _brl(top['swing'])))
     if p['comparable_n'] == 0:
         L.append('10 片手工甲的可比样本 0 条，今天不给定价结论。')
     else:

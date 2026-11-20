@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>数据需求清单 · 码尺 CodeScale</title>
+<meta name="description" content="这一单还缺哪些数据、每一项用来回答什么问题、缺了以后报告里会怎么写。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="1.5" y="1.5" width="21" height="21" rx="6" stroke="#7c5cff" stroke-width="1.5"/>
+        <path d="M7 16.5V7.5h6.4L17 11.1v5.4z" stroke="#e9ebf2" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M9.6 11.2h2.2M9.6 13.6h4.2" stroke="#7c5cff" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="nm">码尺<em>CODESCALE</em></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html">← 返回看板</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">DATA REQUESTS · 巴西站</div>
+    <h1>这一单还缺哪些数据</h1>
+    <div class="sub">按状态分组。每一项写清用来回答什么问题、缺了以后报告里会怎么写。<b>缺失就写缺失，不用估算值冒充实测值。</b></div>
+  </div>
+
+  <div class="warnbar"><span>
+    <b>先说一句实话</b>　下面这些不是「对方不愿意给」。其中三项，川哥一句「前三个数据没有，因为这个是测试店铺的数据」
+    就否掉了三个，是这个店根本没有，不是拖着。再拿同一句话去追，只会显得我们没听懂他上一句。
+  </span></div>
+
+  <section>
+    <div class="sh"><span class="idx">01</span><h2>已被明确拒绝</h2><span class="meta">3 项 · 等换到主店再要</span></div>
+    <p class="lead">这三项现在追不到，也不要再追。它们属于主店才有的东西，换店时一并提出，比现在反复问有用。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>用来回答什么</th><th>缺了以后报告里怎么写</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>每个 SKU 的上架日期</b></td>
+            <td>哪些商品是真在卖、哪些是挂着试水的。没有它，算不出动销周期</td>
+            <td>标注「上架时长未知，动销率按在售 SKU 总数平摊」，并在方法页说明这是近似</td>
+          </tr>
+          <tr>
+            <td><b>订单明细（含退款原因）</b></td>
+            <td>退款 53% 到底退在哪、为什么退。这是这一单最要紧的一个数</td>
+            <td>只能给「退款占 GMV 53%」这个总量，给不出原因分布。报告里明确写「原因未知」</td>
+          </tr>
+          <tr>
+            <td><b>广告花费（按天 / 类型 / 归因 GMV）</b></td>
+            <td>GMV 里有多少是买来的，投一块钱回来几块</td>
+            <td>标注「广告数据缺失，ROI 无法计算」。投流保本价只能给模型值，不能给实测值</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">02</span><h2>已开口，等回复</h2><span class="meta">1 项 · 最要紧</span></div>
+    <p class="lead">这一项比上面三项都急，因为它决定了一个已经写进报告的数字成不成立。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>用来回答什么</th><th>为什么最要紧</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>广宣 12.5% 是计划费率，还是实际每月投放额</b></td>
+            <td>投流保本价 R$ 46.54 这个数成不成立</td>
+            <td>整个投流口径的费率是 57.39%，其中广告占 12.46%。费率一变，46.54 跟着变。
+              现在这个数是从成本表的计划值来的，不是从实际花费来的</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">03</span><h2>从未开口</h2><span class="meta">4 项 · 我们的问题，不是对方的问题</span></div>
+    <p class="lead">这几项一直没问过。别在心里记成「他要了不给」，那是两回事。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>用来回答什么</th><th>优先级</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>这个店占整体生意多大比例</b><br><span style="color:#8b91a8">其他平台与店铺是什么量级</span></td>
+            <td>现在看的这个店是不是主战场。一周 GMV 折人民币约 450 元的店，养不起任何付费服务</td>
+            <td><span class="tag bad">高</span></td>
+          </tr>
+          <tr>
+            <td><b>各店铺近 30 天总览</b><br><span style="color:#8b91a8">平台 / 店名 / GMV / 订单 / 退款率 / 广告花费，一行一店</span></td>
+            <td>该看哪个店。这是从测试店转到主店的前提</td>
+            <td><span class="tag bad">高</span></td>
+          </tr>
+          <tr>
+            <td><b>按 R$ 69 真实卖出过多少单</b></td>
+            <td>「成本结构按 R$ 69 设计」这个前提成不成立。卖过才有意义，没卖过就只是标价</td>
+            <td><span class="tag warn">中</span></td>
+          </tr>
+          <tr>
+            <td><b>223 个 SKU 压了多少货值、30 天没动过多少</b></td>
+            <td>「重资产压货」这条结论的唯一证据。现在这条结论没有数据支撑，只有推理</td>
+            <td><span class="tag warn">中</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">04</span><h2>答了一半</h2><span class="meta">1 项</span></div>
+    <p class="lead">口径给了，数量没给。这种最容易误记成「已经给了」。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>已知</th><th>还差什么</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>库存</b></td>
+            <td>「海外业务全部是海外仓现货」</td>
+            <td>数量、周转天数、补货周期。没有数量，223 个 SKU 压货测算做不了</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">05</span><h2>已到手</h2><span class="meta">不用再要</span></div>
+    <p class="lead">这几项已经到了，或者已有替代口径。列出来是为了避免重复索取，重复问同一件事会显得我们没整理。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>状态</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>商品成本表</td><td><span class="tag ok">已给</span></td>
+            <td>NA-001~010 截图，22 列。三项口径待确认</td></tr>
+          <tr><td>标价 R$ 55–64 与客单价 R$ 18 的差额</td><td><span class="tag ok">已答</span></td>
+            <td>一直改价做测试，数据不真实。此项关闭</td></tr>
+          <tr><td>头程单价</td><td><span class="tag ok">已答</span></td>
+            <td>180 BRL/kg，按每件 20g 折算 R$ 3.60</td></tr>
+          <tr><td>包装规格</td><td><span class="tag ok">已答</span></td>
+            <td>一袋（套）10 片，与成本表口径一致</td></tr>
+          <tr><td>品类</td><td><span class="tag ok">已定</span></td>
+            <td>穿戴甲。223 个商品名全部为 unhas postiças</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">06</span><h2>我们不要什么</h2><span class="meta">主动划掉</span></div>
+    <p class="lead">主动说清不收什么，比多要十项更能建立信任。</p>
+    <div class="card">
+      <div class="src" style="grid-template-columns:1fr">
+        <div class="why">
+          客户个人信息、地址、电话<br>
+          财务账、银行流水<br>
+          供应商合同、采购合同原件<br>
+          员工的个人数据<br><br>
+          <span style="color:#8b91a8">只看经营层面的汇总数据，脱敏的就行。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">07</span><h2>我们的处理方式</h2><span class="meta">一起发，降低对方顾虑</span></div>
+    <div class="card">
+      <div class="src" style="grid-template-columns:1fr">
+        <div class="why">
+          一、只在本地电脑处理，不上传到任何第三方平台<br>
+          二、报告里不出现客户个人信息<br>
+          三、原始表不留副本，项目结束就删<br>
+          四、报告内容未经同意不对外讲<br><br>
+          <span style="color:#8b91a8">口径与数据现状见 <a href="index.html">看板首页</a>，方法与成本模型见
+          <a href="reports/2026-11-20.html">当日日报</a>。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <b>更新</b>　2026-11-20 · 按 11-14 数据索取台账逐条核对，不凭记忆<br>
+    <b>原则</b>　缺失就写缺失。一旦客户发现我们编了一个数，整份报告都不可信<br>
+    <b>码尺 CodeScale</b>　跨境选品数据台
+  </footer>
+</div>
+
+</body>
+</html>

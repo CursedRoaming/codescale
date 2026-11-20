@@ -267,6 +267,67 @@ function scale(d) {
   $('scale-meta').textContent = `${grid.length} 档售价 × ${s.volumes.length} 档单量 · ${s.basis}口径`;
 }
 
+/* ---------------- 成本敏感性 ---------------- */
+/* 一次只动一个变量。表里的区间是该变量 ±step 时保本价的落点，
+   不按正负排序，只给区间，免得汇率那种反向变动的行被读错方向。 */
+function sens(d) {
+  const s = d.sensitivity;
+  if (!s || !s.rows || !s.rows.length) {
+    $('sens-lead').innerHTML = '<div class="empty">这一版没有生成敏感性表。</div>';
+    $('sens-meta').textContent = '--';
+    return;
+  }
+  const b = s.base, step = Math.round(s.step * 100);
+
+  const pair = (a, c, fmt) => {
+    if (a == null || c == null) return '--';
+    const lo = Math.min(a, c), hi = Math.max(a, c);
+    const one = (x) => fmt === 'fx' ? '¥' + Number(x).toFixed(2)
+      : fmt === 'rate' ? (x * 100).toFixed(2) + '%' : BRL(x);
+    return lo === hi ? one(lo) : one(lo) + ' – ' + one(hi);
+  };
+  const pairSigned = (a, c) => {
+    if (a == null || c == null) return '--';
+    const lo = Math.min(a, c), hi = Math.max(a, c);
+    return lo === hi ? SGN(lo) : SGN(lo) + ' – ' + SGN(hi);
+  };
+
+  const rows = s.rows.map((r) => {
+    const full = r.scope === 'full';
+    const beLo = full ? r.be_full_low : r.be_org_low;
+    const beHi = full ? r.be_full_high : r.be_org_high;
+    return `<tr>
+      <td>${r.label}${full ? ' <span class="tag off">仅投流口径</span>' : ''}</td>
+      <td style="color:#8b91a8">${pair(r.low, r.high, r.fmt)}</td>
+      <td>${pair(beLo, beHi, 'brl')}</td>
+      <td><b>${r.swing.toFixed(2)}</b></td>
+      <td class="${(r.net_low < 0 || r.net_high < 0) ? 'neg' : 'pos'}">${pairSigned(r.net_low, r.net_high)}</td>
+    </tr>`;
+  }).join('');
+
+  const top = s.rows[0];
+  $('sens-lead').innerHTML = `
+    <div class="verdict" style="margin:0 0 4px">
+      单看摆幅，最大的一项是 <b>${top.label}</b>，动 ${step}% 就让每副的保本线挪 <b>${BRL(top.swing)}</b>。
+      但摆幅最大不等于最该动：汇率是被动风险，砍不动；采购价是唯一既动得大又谈得下来的。
+      想降价，先谈采购，再谈头程，最后才是费率。</div>`;
+
+  $('sens-table').innerHTML = `
+    <table><thead><tr>
+      <th>驱动项</th><th>该项 ±${step}%</th>
+      <th>保本价落在（不投流）</th><th>摆幅</th>
+      <th>${BRL(s.anchor)} 时单件净利</th>
+    </tr></thead><tbody>${rows}</tbody></table>
+    <div class="legend" style="margin-top:10px">
+      <span style="color:#5f6478">摆幅 = 该项单独动 ${step}% 时保本价的变动额，其余变量按住不动</span>
+    </div>
+    <div class="warnbar" style="margin-top:14px"><span>
+      <b>摆幅不能相加</b>　汇率与采购是同一笔钱的两个视角，两项同时动不等于两数相加。
+      这是排优先级用的尺子，不是预测。</span></div>`;
+
+  $('sens-meta').textContent = `${s.rows.length} 项 · 单项 ±${step}% · 基准 ${BRL(b.be_org)}`;
+}
+
 /* ---------------- 手工款对标 ---------------- */
 function comp(d) {
   const c = d.cost, n = d.comparable_n;
@@ -361,5 +422,5 @@ function foot(d) {
   }
   const { data, runs: list } = got;
   head(data); notice(data); kpis(data); verdict(data); bands(data); specs(data);
-  econ(data); scale(data); comp(data); srcs(data); runs(data, list); foot(data);
+  econ(data); scale(data); sens(data); comp(data); srcs(data); runs(data, list); foot(data);
 })();

@@ -26,6 +26,7 @@
       <a href="#s-spec">规格</a>
       <a href="#s-econ">盈亏</a>
       <a href="#s-scale">规模</a>
+      <a href="#s-sens">敏感</a>
       <a href="#s-comp">对标</a>
       <a href="#s-src">数据源</a>
       <a href="#s-runs">归档</a>
@@ -75,21 +76,33 @@
     </div>
   </section>
 
+  <section id="s-sens">
+    <div class="sh"><span class="idx">05</span><h2>成本敏感性</h2><span class="meta" id="sens-meta"></span></div>
+    <p class="lead">每个成本项单独动一成，保本线跟着挪多少。用途只有一个：排优先级，先盯哪一项。</p>
+    <div class="card">
+      <div id="sens-lead"></div>
+      <div id="sens-table" style="margin-top:18px"></div>
+    </div>
+  </section>
+
   <section id="s-comp">
-    <div class="sh"><span class="idx">05</span><h2>手工款对标</h2><span class="meta" id="comp-meta"></span></div>
+    <div class="sh"><span class="idx">06</span><h2>手工款对标</h2><span class="meta" id="comp-meta"></span></div>
     <p class="lead">自家产品是 10 片手工甲。这里只放同一类的东西，其余样本一律不参与对比。</p>
     <div class="card" id="comp"></div>
   </section>
 
   <section id="s-src">
-    <div class="sh"><span class="idx">06</span><h2>数据源健康</h2><span class="meta" id="src-meta"></span></div>
+    <div class="sh"><span class="idx">07</span><h2>数据源健康</h2><span class="meta" id="src-meta"></span></div>
     <p class="lead">状态是事实，不是故障报告。没接上的写没接上，被拦的写被拦，不拿旧数据冒充新数据。</p>
     <div class="card" id="srcs"></div>
     <div id="warn"></div>
+    <p style="margin-top:14px;color:#8b91a8">
+      还缺哪些数据、每项用来回答什么问题：<a href="data-needs.html">数据需求清单 →</a>
+    </p>
   </section>
 
   <section id="s-runs">
-    <div class="sh"><span class="idx">07</span><h2>运行归档</h2><span class="meta" id="runs-meta"></span></div>
+    <div class="sh"><span class="idx">08</span><h2>运行归档</h2><span class="meta" id="runs-meta"></span></div>
     <p class="lead">每天一份不可变快照。报告一旦发出，数字就不再变。</p>
     <div class="card"><div class="runs" id="runs"></div></div>
   </section>
@@ -97,7 +110,7 @@
   <footer id="foot"></footer>
 </div>
 
-<script src="data/latest.js?v=20261120113606"></script>
+<script src="data/latest.js?v=20261120122740"></script>
 <script src="app.js"></script>
 </body>
 </html>

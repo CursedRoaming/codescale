@@ -93,6 +93,8 @@ def main():
     p['dedupe'] = {'in': len(recs), 'kept': len(kept), 'dropped': dup,
                    'invalid': len(raws) - len(recs)}
     p['variants'] = metrics.versions(kept)
+    # 单因素敏感性：哪一项动 10% 把保本线推得最远。纯算术，不依赖外部数据。
+    p['sensitivity'] = cost_mod.sensitivity(cost_mod.model())
 
     dates = p['observed_dates']
     fresh = (datetime.date.fromisoformat(run_date) - datetime.date.fromisoformat(dates[-1])).days if dates else None
