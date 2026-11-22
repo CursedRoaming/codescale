@@ -35,6 +35,18 @@
    "report": "reports/2026-11-22.html",
    "changed": false,
    "data_date": "2026-11-06"
+  },
+  {
+   "date": "2026-11-23",
+   "run_at": "2026-11-23T03:03:47+08:00",
+   "n": 75,
+   "median": 28.5,
+   "over_be_ratio": 0.4667,
+   "sources_ok": 1,
+   "sources_total": 5,
+   "report": "reports/2026-11-23.html",
+   "changed": false,
+   "data_date": "2026-11-06"
   }
  ]
 }
