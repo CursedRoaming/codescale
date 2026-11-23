@@ -287,7 +287,7 @@
  "movers": [],
  "delta": {
   "has_prev": true,
-  "prev_date": "2026-11-22",
+  "prev_date": "2026-11-23",
   "changed": false,
   "new": 0,
   "gone": 0,
@@ -295,7 +295,7 @@
   "n_delta": 0,
   "median_from": 28.5,
   "median_to": 28.5,
-  "days_between": 16,
+  "days_between": 17,
   "note": "本次运行没有取到任何新记录：条数、商品、价格与上一版完全一致。下面所有数字来自同一批数据，不是新一期行情。"
  },
  "scale": {
@@ -867,11 +867,11 @@
   "tagline": "跨境选品数据台",
   "version": "0.1.0",
   "schema": 1,
-  "run_date": "2026-11-23",
-  "generated_at": "2026-11-23T03:03:47+08:00",
+  "run_date": "2026-11-24",
+  "generated_at": "2026-11-24T07:24:36+08:00",
   "data_date": "2026-11-06",
-  "freshness_days": 17,
-  "report_url": "reports/2026-11-23.html",
+  "freshness_days": 18,
+  "report_url": "reports/2026-11-24.html",
   "currency": "BRL",
   "schedule": {
    "timezone": "Asia/Shanghai",
