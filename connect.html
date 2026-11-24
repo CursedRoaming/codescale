@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>渠道接入中心 · 码尺 CodeScale</title>
-<meta name="description" content="所有可选数据渠道、每个渠道能拿到什么、怎么申请、要多少成本。下方台账可自由填写，内容只保存在本机浏览器。">
+<meta name="description" content="可选数据渠道及其接入条件、操作步骤与成本。下方台账可自由填写，内容仅保存在本机浏览器。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
 <link rel="stylesheet" href="theme.css">
 <style>
@@ -117,68 +117,67 @@
   <div class="hero">
     <div class="eyebrow">CHANNEL HUB · 按需接入</div>
     <h1>渠道接入中心</h1>
-    <div class="sub">能接的渠道都列在下面。每个写清楚能拿到什么、要花多少钱、卡在哪个条件上。想接几个接几个，没有顺序要求。</div>
+    <div class="sub">以下列出当前可选的数据渠道。每项说明可获取的数据、成本与接入条件。渠道可按需选择，无固定顺序。</div>
   </div>
 
   <div class="localbar"><span>
-    <b>关于下面的台账</b>　你填的每一个字只存在你自己这台电脑的浏览器里，不上传，不发给任何人。
-    这个网页没有服务器，也没有提交按钮。关掉再打开还在，换电脑就没了，所以要导出文件留底。
+    <b>台账说明</b>　台账内容仅保存在当前设备的浏览器中，不上传，不发送。本页无服务端与提交操作。
+    关闭页面后内容保留，更换设备时需通过导出文件迁移。
   </span></div>
   <div class="localbar warn"><span>
-    <b>一处劝告</b>　这里适合记账号、主体、应用 ID、备注和进度。密码、Secret Key、token 不要填进来。
-    浏览器的本地存储不是保险箱。那些密钥由脚本在本机生成和保存，你从头到尾都不用接触它们。
-    <b>如果你坚持填，页面不会拦你，只会在旁边提醒一次。</b>
+    <b>填写建议</b>　台账适合记录账号、主体、应用 ID、进度与备注。密码、Secret Key 与 token 不应填写于此。
+    浏览器本地存储不具备加密保护，相关密钥由脚本在本机生成并保存。如仍填写，页面仅作提示，不作拦截。
   </span></div>
 
   <section>
-    <div class="sh"><span class="idx">01</span><h2>可选渠道</h2><span class="meta">按当前建议顺序排</span></div>
-    <p class="lead">状态写的是今天的事实，没有把没接上的说成已接。难度说的是资质和审核，不是技术。</p>
+    <div class="sh"><span class="idx">01</span><h2>可选渠道</h2><span class="meta">按建议顺序排列</span></div>
+    <p class="lead">状态反映当前实际情况。未接入与受阻项目均如实标注。</p>
     <div class="grid" id="ch-grid"></div>
   </section>
 
   <section>
-    <div class="sh"><span class="idx">02</span><h2>逐个说明</h2><span class="meta">点开看怎么弄</span></div>
-    <p class="lead">点标题展开。每一步都按真实后台流程写，没有把握的地方标了未实测。</p>
+    <div class="sh"><span class="idx">02</span><h2>逐项说明</h2><span class="meta">点击标题展开</span></div>
+    <p class="lead">操作步骤依据各平台公开资料编写。未经实测的项目已明确标注。</p>
     <div id="ch-detail"></div>
   </section>
 
   <section>
-    <div class="sh"><span class="idx">03</span><h2>我的接入台账</h2><span class="meta">自由填写 · 只在本机</span></div>
-    <p class="lead">渠道名自己写，预设列表里没有的也能加。一列管一个渠道，管多少个都行。改完自动保存，不用点保存。</p>
+    <div class="sh"><span class="idx">03</span><h2>接入台账</h2><span class="meta">自由填写 · 仅存本机</span></div>
+    <p class="lead">渠道名称可自定义，不受预设列表限制。每行记录一个渠道，数量不限。内容自动保存。</p>
     <div class="card">
       <div class="stats" id="stats"></div>
       <div class="ledger">
         <div class="hd">渠道或模块</div><div class="hd">账号 / 主体</div>
         <div class="hd">应用 ID / 标识</div><div class="hd">状态</div>
-        <div class="hd">备注 · 想写什么写什么</div><div class="hd"></div>
+        <div class="hd">备注</div><div class="hd"></div>
       </div>
       <div id="rows"></div>
       <div class="tools">
-        <button class="btn main" id="add">+ 加一行</button>
-        <button class="btn" id="exp">导出文件留底</button>
+        <button class="btn main" id="add">+ 新增一行</button>
+        <button class="btn" id="exp">导出文件</button>
         <button class="btn" id="impbtn">导入文件</button>
         <button class="btn danger" id="clr">清空</button>
         <input type="file" id="impfile" accept="application/json,.json" style="display:none">
       </div>
       <div style="margin-top:20px">
         <div style="font-size:12px;color:var(--ink);font-weight:600;margin-bottom:8px">总备注</div>
-        <textarea id="notes" placeholder="例如：线下见面定下来的口径、川哥说过的原话、下次要问的问题。随便写。"></textarea>
-        <div class="hint">同样只存在本机。导出的文件里会一起带上。</div>
+        <textarea id="notes" placeholder="例如：已确认的口径、待核实事项、后续跟进问题。"></textarea>
+        <div class="hint">同样仅存本机，导出时一并写入文件。</div>
       </div>
     </div>
   </section>
 
   <section>
-    <div class="sh"><span class="idx">04</span><h2>几条边界</h2><span class="meta">写明白，免得以后扯皮</span></div>
+    <div class="sh"><span class="idx">04</span><h2>责任边界</h2><span class="meta">使用范围说明</span></div>
     <div class="card">
       <table>
         <thead><tr><th>问题</th><th>实际情况</th></tr></thead>
         <tbody>
-          <tr><td style="width:200px">这个网页能改平台数据吗</td><td style="text-align:left;color:var(--dim)">不能。它只是说明加本机记事本，不连任何接口，不写仓库，不发邮件。</td></tr>
-          <tr><td>填了就能自动接上吗</td><td style="text-align:left;color:var(--dim)">不能。台账只是记录和提醒。真正接数据源要跑脚本，脚本由舜尧维护。</td></tr>
-          <tr><td>以后 FDE 上线怎么办</td><td style="text-align:left;color:var(--dim)">在台账里直接加一行，渠道名写 FDE 模块名就行。页面不用改，加多少行都可以。</td></tr>
-          <tr><td>换电脑或者清了浏览器</td><td style="text-align:left;color:var(--dim)">会丢。所以每隔一段时间点一次导出文件留底，把 JSON 存好。</td></tr>
-          <tr><td>要交给舜尧怎么处理</td><td style="text-align:left;color:var(--dim)">把导出的 JSON 发给他。他导入就能看到全部记录。密钥不要放进这个文件。</td></tr>
+          <tr><td style="width:200px">本页是否修改平台数据</td><td style="text-align:left;color:var(--dim)">否。本页仅提供说明与本机记录功能，不连接任何接口，不写入仓库，不发送邮件。</td></tr>
+          <tr><td>填写台账是否自动接入数据源</td><td style="text-align:left;color:var(--dim)">否。台账用于记录与提醒。数据源接入需由开发者执行相应脚本。</td></tr>
+          <tr><td>后续 FDE 模块如何处理</td><td style="text-align:left;color:var(--dim)">在台账中新增一行并填写模块名称即可。页面无需修改。</td></tr>
+          <tr><td>更换设备或清除浏览器数据</td><td style="text-align:left;color:var(--dim)">台账内容会丢失。建议定期导出文件留存。</td></tr>
+          <tr><td>如何移交给开发者</td><td style="text-align:left;color:var(--dim)">发送导出的 JSON 文件。开发者导入后可查看全部记录。密钥不应写入该文件。</td></tr>
         </tbody>
       </table>
     </div>
@@ -186,7 +185,7 @@
 
   <footer>
     <b>数据去向</b>　本页唯一写入位置是浏览器 localStorage，键名 <code>codescale.connect.v1</code><br>
-    <b>更新</b>　2026-11-24 · 渠道条件按各平台开放平台公开资料整理，未实测的已标注<br>
+    <b>更新</b>　2026-11-24 · 渠道信息依据各平台公开资料整理，未经实测项目已标注<br>
     <b>码尺 CodeScale</b>　跨境选品数据台
   </footer>
 </div>
@@ -197,105 +196,105 @@
 var CHANNELS = [
   {
     n:'Mercado Livre 美客多', r:'主样本', s:'待授权', sc:'y',
-    w:'公开商品的价格、销量、上架时间、单品链接。川哥主渠道，拿到就能回答竞品定价。',
+    w:'公开商品的价格、销量、上架时间与单品链接。该渠道为当前主要经营渠道，数据可直接用于竞品定价分析。',
     f:['免费','资质门槛低','只读授权'],
-    d:'官方开放平台，注册应用后让川哥点一次授权。授权脚本已经写好，只差应用凭证和那一次点击。',
+    d:'通过官方开放平台注册应用并完成使用者授权。授权脚本已编写完成，尚需应用凭证与一次授权操作。',
     steps:[
-      '在 developers.mercadolivre.com.br 用美客多账号登录，建一个叫 codescale 的应用。',
-      'Redirect URI 填 http://localhost:3333/callback，一字不差。',
-      '权限只勾 read 和 offline_access。不要勾 write，我们不需要写任何东西。',
-      '拿到 App ID 和 Secret Key，交给舜尧跑授权脚本。川哥要做的只是在美客多官网点一次同意。'
+      '在 developers.mercadolivre.com.br 使用美客多账号登录，创建名为 codescale 的应用。',
+      'Redirect URI 填写 http://localhost:3333/callback，需完全一致。',
+      '权限仅勾选 read 与 offline_access，不勾选 write。',
+      '取得 App ID 与 Secret Key 后交由开发者执行授权脚本。使用者只需在美客多官网确认授权。'
     ],
-    c:'授权脚本只做过语法检查，没有真跑过。接口里的 sold_quantity 疑似累计销量，不是时段增量，拿到 token 后要先验这个字段再排爆品。'
+    c:'授权脚本仅通过语法检查，尚未实跑。接口字段 sold_quantity 疑为累计销量而非时段增量，取得 token 后需先行验证，再用于爆品排序。'
   },
   {
     n:'Shopee 巴西', r:'主渠道补充', s:'未开始', sc:'',
-    w:'商品、价格、库存、订单、退款、广告花费。川哥也在这卖，补上才是完整的多平台。',
+    w:'商品、价格、库存、订单、退款与广告花费。该渠道同为实际经营渠道，接入后可形成完整的多平台样本。',
     f:['免费','需巴西企业资质','审核数日'],
-    d:'官方开放平台。巴西站个人卖家不能注册开发者，要有 CNPJ 企业资料且近 30 天有订单，审核约三个工作日，应用上线再约一天。',
+    d:'通过官方开放平台接入。巴西站开发者注册要求企业资质与近 30 天订单记录，注册审核约三个工作日，应用上线审核约一个工作日。',
     steps:[
-      '在 open.shopee.com 注册开发者，主体选 Registered Business Seller。',
-      '建 Seller In-house System 类型的应用，拿到测试用的 Partner ID 和 Key。',
-      '提交 Go Live 审核，通过后换成正式 Partner ID 和 Key。',
-      '配置回调域名和 IP 白名单，再用店铺账号（不是主账号）授权，期限可选到 365 天。'
+      '在 open.shopee.com 注册开发者，主体类型选择 Registered Business Seller。',
+      '创建 Seller In-house System 类型应用，取得测试环境的 Partner ID 与 Partner Key。',
+      '提交 Go Live 审核，通过后取得正式环境的 Partner ID 与 Partner Key。',
+      '配置回调域名与 IP 白名单，使用店铺账号（非主账号）完成授权，有效期最长 365 天。'
     ],
-    c:'巴西企业资质这道门槛我们绕不过去。如果川哥只有个人主体，这一路暂时走不通，别在这上面耗时间。授权到期或撤销后要重新授权。'
+    c:'巴西站开发者注册要求企业资质，个人主体无法满足。若使用者仅具备个人主体，该渠道暂不可接入。授权到期或被撤销后需重新授权。'
   },
   {
     n:'TikTok Shop 巴西', r:'趋势侧', s:'未开始', sc:'',
-    w:'商品、订单、达人带货、内容数据。适合回答什么内容在带量，不适合当价格主样本。',
-    f:['免费','审核周级','请求要签名'],
-    d:'Partner Center 注册开发者，自建应用走授权。自用店铺的 custom app 通常免应用审核，但注册审核和合规审查按周算。',
+    w:'商品、订单、达人带货与内容数据。适用于内容带量分析，不适合作为价格主样本。',
+    f:['免费','审核周级','请求需签名'],
+    d:'在 Partner Center 注册开发者并创建应用，由店铺完成授权。自用店铺的自建应用通常免于应用审核，但注册与合规审查按周计算。',
     steps:[
-      '在 partner.tiktokshop.com 注册卖家开发者，邮箱必须与店铺一致。',
-      '建 custom app，只申请商品读取相关权限，勾多了会拖长审核。',
-      '生成授权链接给店铺点同意，拿到 code 后换 access_token 和 refresh_token。',
-      '每次业务调用都要带签名，token 默认七天有效，要做自动续期。'
+      '在 partner.tiktokshop.com 注册开发者，注册邮箱需与店铺账号一致。',
+      '创建自建应用，仅申请商品读取相关权限，权限过多会延长审核时间。',
+      '生成授权链接供店铺确认，取得授权码后换取 access_token 与 refresh_token。',
+      '每次业务调用均需附加签名，access_token 默认有效期七天，需实现自动续期。'
     ],
-    c:'审核周期以周计，签名和 token 续期的工程量不小。Kalodata 已经是 TikTok 数据源，先把美客多接上再考虑这一路。'
+    c:'审核周期以周计，请求签名与 token 续期具有一定实现成本。Kalodata 已提供 TikTok 侧数据，建议优先完成美客多接入。'
   },
   {
     n:'Amazon 巴西', r:'待确认', s:'未开始', sc:'',
-    w:'商品、价格、评论、Buy Box。如果川哥在这也开店，能补齐第三个平台。',
+    w:'商品、价格、评论与 Buy Box 数据。若使用者在该平台经营，可补充为第三个数据来源。',
     f:['需专业卖家','月费','审核'],
-    d:'走 SP-API，需要专业卖家账号和开发者注册。我们没有实测过巴西站的具体门槛。',
+    d:'通过 SP-API 接入，需专业卖家账号并完成开发者注册。巴西站具体门槛尚未实测。',
     steps:[
-      '先问川哥是否真的在 Amazon 巴西有店，没有就不用接。',
-      '有的话确认是专业卖家账号，个人账号通常拿不到 SP-API。',
-      '在 Seller Central 完成开发者注册，创建应用并申请相应角色。',
-      '拿到凭证后再决定采集哪些字段。'
+      '先确认使用者是否在 Amazon 巴西经营，如无则可跳过该渠道。',
+      '如经营主体为专业卖家账号，在 Seller Central 完成开发者注册。',
+      '创建应用并申请所需的数据角色。',
+      '取得凭证后，再确定采集字段范围。'
     ],
-    c:'全渠道未实测。先问清楚有没有店，别先做应用。'
+    c:'该渠道未做实测。建议先确认经营主体，再决定是否创建应用。'
   },
   {
     n:'Kalodata', r:'备选', s:'会话已保存', sc:'y',
-    w:'TikTok 商品的平均价、销量、上架时间、达人数。计价是人民币，要按汇率折算。',
+    w:'TikTok 商品的平均价、销量、上架时间与达人数。计价为人民币，需按汇率折算后使用。',
     f:['试用免费','每天10条','非主渠道'],
-    d:'没有公开 API，靠浏览器会话登录后在网页上取数。登录会话已经保存在本机，接口也摸清了。',
+    d:'无公开 API，需通过浏览器会话登录后在网页端取数。登录会话已保存在本机，接口结构已确认。',
     steps:[
-      '试用版每次只能取 10 条，且只能看第一页，改 pageSize 或 pageNo 都会报错。',
-      '搜索词用 unhas posticas 会混进指甲锉、假甲片和宠物用品，要人工筛。',
-      '数据是 TikTok 渠道、人民币计价，和川哥的美客多样本不能混着算中位价。',
-      '专业版 1999 元一年，才能拿到 500 条一次的额度。先别买，等主渠道跑起来再说。'
+      '试用版单次最多返回 10 条，且仅可读取第一页。调整 pageSize 或 pageNo 会返回错误。',
+      '搜索词 unhas posticas 的结果包含指甲锉、假甲片与宠物用品，需人工筛选。',
+      '数据来自 TikTok 渠道且以人民币计价，不应与美客多样本合并计算中位价。',
+      '专业版年费 1999 元，单次额度可提升至 500 条。建议在主渠道接入完成后再评估。'
     ],
-    c:'这条已经验证到接口层，瓶颈是试用额度，不是技术。它只能做参考，替代不了主样本。'
+    c:'该渠道已验证至接口层，限制来自试用额度而非技术实现。仅可作为参考，不可替代主样本。'
   },
   {
-    n:'川哥自有经营数据', r:'价值最高', s:'被拒3项', sc:'r',
-    w:'真实成交、退款率、广告花费、上架日期。这几个数直接决定定价模型准不准。',
-    f:['成本0','靠沟通','之前被拒'],
-    d:'不是接口，是川哥从后台导出的表，或者线下碰场景时口头给的口径。之前要过一次，他回「前三个数据没有」。',
+    n:'客户经营数据', r:'价值最高', s:'暂缺3项', sc:'r',
+    w:'真实成交、退款率、广告花费与上架日期。上述数据直接影响定价模型的准确性。',
+    f:['成本0','需沟通','此前暂缺'],
+    d:'该渠道非接口形式，由使用者从后台导出，或在线下沟通中提供口径。此前询问时，三项数据被告知当前店铺不提供。',
     steps:[
-      '线下见面时把三项重新问一遍，问清楚是没有，还是不方便给，还是导出路径不同。',
-      '问清楚他平时从哪个渠道看什么品爆了，这件事比接口重要。',
-      '如果愿意给表，约定格式和频率，别一次要太多。',
-      '拿到的表只在本机处理，报告里不出现客户个人信息。'
+      '在线下沟通中重新确认三项数据的状态，区分不存在、不便提供与导出路径不同三种情形。',
+      '确认使用者日常通过何种渠道判断爆款，该项优先级高于接口接入。',
+      '如可提供数据文件，需约定格式与更新频率。',
+      '数据文件仅在本机处理，报告中不出现客户个人信息。'
     ],
-    c:'川哥 11-19 说过欢迎线下碰场景。这三条死结线上发消息说不清，见面谈比催接口有用。'
+    c:'使用者曾表示愿意安排线下沟通。上述三项属于业务口径问题，适合当面确认。'
   },
   {
     n:'公开网页与趋势', r:'参考', s:'未开始', sc:'',
-    w:'搜索热度、类目结构、季节性。只能看方向，不能进价格样本。',
-    f:['免费','无需账号','仅参考'],
-    d:'公开搜索页和趋势工具。反爬严重，抓取不稳定，适合人工看一眼而不是自动跑。',
+    w:'搜索热度、类目结构与季节性变化。仅用于判断方向，不纳入价格样本。',
+    f:['免费','无需账号','仅供参考'],
+    d:'公开搜索页与趋势工具。反爬机制导致自动抓取不稳定，适合人工查阅。',
     steps:[
-      '先把类目结构人工核一遍，确认穿戴甲在巴西平台归在哪。',
-      '需要的时候人工取一两次快照，不接进自动管线。',
-      '任何用于定价的数字都要能点回原页面，不能核的就标不可核。'
+      '先人工核对类目结构，确认穿戴甲在目标平台的归类。',
+      '需要时人工采集少量快照，不接入自动管线。',
+      '用于定价的数字须能回溯至原页面，无法回溯的项目应明确标注。'
     ],
-    c:'公开网页经常跳验证页。硬抓会拿到错数据，宁可不接。'
+    c:'公开网页常跳转至验证页面。强制抓取可能得到错误数据，因此不纳入自动管线。'
   },
   {
     n:'FDE 模块（未来）', r:'预留位', s:'预留', sc:'',
-    w:'以后平台上线的交付、诊断、行业方案类模块。现在还没有功能，这一格只是占位。',
-    f:['未定','等方案','可先记想法'],
-    d:'川哥说 FDE 以后也会放这个平台上。方案没定之前不写代码，但你可以先在台账里记下要放什么。',
+    w:'后续计划接入的交付、诊断与行业方案类模块。当前尚无功能，此项为预留记录位。',
+    f:['未定','等方案','可先记录需求'],
+    d:'根据当前规划，FDE 相关模块后续将在本平台提供。方案确定前不进行开发，可先在台账中记录需求。',
     steps:[
-      '在台账里加一行，渠道名写模块名，状态写预留。',
-      '备注里写清这个模块要解决什么问题，给谁用。',
-      '方案定下来后舜尧按台账逐项实现。'
+      '在台账中新增一行，渠道名称填写模块名称，状态填写预留。',
+      '在备注中写明该模块解决的问题与使用对象。',
+      '方案确定后由开发者按台账逐项实现。'
     ],
-    c:'这是预留位，不代表功能已经存在。不要对外说平台已有 FDE 能力。'
+    c:'此项为预留记录位，不代表相关功能已上线。对外描述时不表述为已具备 FDE 能力。'
   }
 ];
 
@@ -314,7 +313,7 @@ function load(){
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(state)); }
-  catch(e){ alert('本机存储写入失败，请先点导出文件留底。'); }
+  catch(e){ alert('本机存储写入失败，请先导出文件留存。'); }
 }
 function esc(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
@@ -346,7 +345,7 @@ function checkSens(row, input){
   var compact = v.replace(/\s/g,'');
   var bad = SENSITIVE.test(v) || (compact.length > 40 && compact.indexOf(' ') < 0 && !/\s/.test(v));
   box.className = 'sens' + (bad ? ' show' : '');
-  if(bad) box.textContent = '这一格看起来像密钥或密码。它只存本机，但不是保险箱。账号和应用 ID 可以留，密钥建议删掉，交给脚本在本机生成。';
+  if(bad) box.textContent = '该内容疑似密钥或密码。台账仅存本机，但不具备加密保护。账号与应用 ID 可以保留，密钥建议删除，由脚本在本机生成。';
 }
 
 function renderRows(){
@@ -355,14 +354,14 @@ function renderRows(){
   host.innerHTML = state.items.map(function(it, i){
     return '<div class="rowbox" data-i="'+i+'"><div class="ledger">'+
       '<div class="f" data-l="渠道或模块"><input data-k="name" value="'+esc(it.name)+'" placeholder="例如 美客多"></div>'+
-      '<div class="f" data-l="账号 / 主体"><input data-k="account" value="'+esc(it.account)+'" placeholder="谁名下"></div>'+
-      '<div class="f" data-l="应用 ID / 标识"><input data-k="appid" value="'+esc(it.appid)+'" placeholder="只写标识，别写密钥"></div>'+
+      '<div class="f" data-l="账号 / 主体"><input data-k="account" value="'+esc(it.account)+'" placeholder="归属主体"></div>'+
+      '<div class="f" data-l="应用 ID / 标识"><input data-k="appid" value="'+esc(it.appid)+'" placeholder="仅填写标识，不填写密钥"></div>'+
       '<div class="f" data-l="状态"><select data-k="status">'+
         ['未开始','准备中','待授权','已授权','已接入','已失效','不需要'].map(function(s){
           return '<option'+(it.status===s?' selected':'')+'>'+s+'</option>'; }).join('')+
       '</select></div>'+
-      '<div class="f full" data-l="备注"><textarea data-k="note" placeholder="进度、卡点、下次要问什么">'+esc(it.note)+'</textarea></div>'+
-      '<button class="del" title="删掉这一行">\u00d7</button></div>'+
+      '<div class="f full" data-l="备注"><textarea data-k="note" placeholder="进度、卡点、后续跟进事项">'+esc(it.note)+'</textarea></div>'+
+      '<button class="del" title="删除该行">\u00d7</button></div>'+
       '<div class="sens"></div></div>';
   }).join('');
 
@@ -443,13 +442,13 @@ function run(){
         save(); renderRows(); renderStats();
         document.getElementById('notes').value = state.notes;
         alert('导入成功，共 '+state.items.length+' 条。');
-      }catch(e){ alert('这个文件读不了，确认是我们导出的 JSON。'); }
+      }catch(e){ alert('文件无法读取，请确认使用本平台导出的 JSON 文件。'); }
     };
     rd.readAsText(f);
     this.value = '';
   });
   document.getElementById('clr').addEventListener('click', function(){
-    if(!confirm('清空本机全部台账记录？建议先导出文件留底。')) return;
+    if(!confirm('清空本机全部台账记录？建议先导出文件留存。')) return;
     state = {items:[blank()], notes:''}; save();
     document.getElementById('notes').value = '';
     renderRows(); renderStats();
