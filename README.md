@@ -51,6 +51,8 @@ python -m unittest discover -s pipeline/tests -v     # 34 个用例
 index.html  app.js  theme.css        前端。无依赖、无构建、无框架
 data-needs.html                      数据需求清单，可单独发给客户
 access.html                          接入说明与安全约定：川哥做什么、交接怎么走。纯说明，无表单
+connect.html                         渠道接入中心：8 个渠道的条件与步骤 + 本机台账（localStorage，
+                                     可导出 JSON）。台账只存本机，不上传；不收集密钥
 data/
   latest.json                        最新一份快照（真源）
   latest.js                          file:// 兜底镜像
