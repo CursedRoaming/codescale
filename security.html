@@ -50,11 +50,11 @@
   </span></div>
 
   <section>
-    <div class="sh"><span class="idx">01</span><h2>凭证与数据边界</h2><span class="meta">作为责任边界</span></div>
+    <div class="sh"><span class="idx">01</span><h2>凭证与数据边界</h2><span class="meta">存储与处理规则</span></div>
     <div class="card">
       <ul class="clean">
         <li><b>不保存明文密码。</b> Kalodata 登录由使用者在浏览器内自行完成，脚本不读取、不保存、不传输密码，仅保留浏览器会话。</li>
-        <li><b>凭据仅存本机。</b> token 保存在执行脚本设备的 <code>~/.workbuddy/secrets/meli/</code> 目录，不进入网页、公开仓库或聊天工具。</li>
+        <li><b>凭据仅存本机。</b> token 保存在执行脚本设备的本机凭证目录，不在站点目录内，不进入网页、公开仓库或聊天工具。具体目录由运行环境配置，交接时单独提供。</li>
         <li><b>原始表不留副本。</b> 项目结束后删除。报告中不出现客户个人信息，未经许可不对外发布。</li>
         <li><b>页面不请求外部服务。</b> 接入中心的台账只写入本机浏览器的 localStorage，键名 <code>codescale.connect.v1</code>。页面在打开与填写过程中均不发起网络请求。</li>
       </ul>
@@ -66,13 +66,14 @@
     <p class="lead">以下命令均在本机执行。GitHub Actions 不持有浏览器会话或 token，仅负责发布。</p>
 
     <div class="card" style="margin-bottom:12px">
+      <p class="lead" style="margin-top:0">下表只列文件名。实际目录由运行环境配置，不写入公开页面；开发者交接时单独提供。</p>
       <table>
-        <thead><tr><th style="width:180px">凭证</th><th>位置与说明</th></tr></thead>
+        <thead><tr><th style="width:180px">凭证</th><th>文件与说明</th></tr></thead>
         <tbody class="kv">
-          <tr><td>美客多应用凭证</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/meli/app.json</code>　App ID 与 Secret Key</td></tr>
-          <tr><td>美客多 token</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/meli/token.json</code>　由脚本写入，不手工修改</td></tr>
-          <tr><td>Kalodata 会话</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/kalodata/state.json</code>　浏览器登录态，不含密码</td></tr>
-          <tr><td>仓库排除规则</td><td style="text-align:left;color:var(--dim)">以上目录均不在 <code>09_码尺平台/</code> 内，已由 <code>.gitignore</code> 排除</td></tr>
+          <tr><td>美客多应用凭证</td><td style="text-align:left;color:var(--dim)"><code>app.json</code>　App ID 与 Secret Key，存于本机凭证目录</td></tr>
+          <tr><td>美客多 token</td><td style="text-align:left;color:var(--dim)"><code>token.json</code>　由脚本写入，不手工修改，存于本机凭证目录</td></tr>
+          <tr><td>Kalodata 会话</td><td style="text-align:left;color:var(--dim)"><code>state.json</code>　浏览器登录态，不含密码，存于本机凭证目录</td></tr>
+          <tr><td>仓库排除规则</td><td style="text-align:left;color:var(--dim)">凭证目录不在 <code>09_码尺平台/</code> 内，已由 <code>.gitignore</code> 排除</td></tr>
         </tbody>
       </table>
     </div>

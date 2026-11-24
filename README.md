@@ -97,8 +97,8 @@ pipeline/
 所以只能让浏览器带着**已登录的会话**去点导出。分三步：
 
 1. `python pipeline/tools/kalodata_login.py`
-   浏览器会打开，你在里面登录，回来按回车。会话存到
-   `~/.workbuddy/secrets/kalodata/state.json`。**密码不存、不传、不写进任何文件。**
+   浏览器会打开，你在里面登录，回来按回车。会话写入本机凭证目录下的 `state.json`，
+   实际目录见本机交接记录，不写进公开文档。**密码不存、不传、不写进任何文件。**
 2. `python pipeline/tools/kalodata_probe.py`
    用这份会话进后台，把菜单、导出按钮文案、表头结构打到
    `pipeline/tools/_probe/report.txt`，并截一张首页图。
