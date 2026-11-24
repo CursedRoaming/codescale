@@ -1,6 +1,6 @@
 /* 码尺 CodeScale · 前端
-   无依赖、无构建。所有数字来自 data/latest.json，页面自己不算任何业务指标，
-   只做「把已有数字放好」这一件事。算数的地方在 pipeline/core，改口径去改那边。 */
+   无依赖、无构建。所有数字来自 data/latest.json，本页不计算业务指标，
+   仅负责呈现既有数据。计算逻辑位于 pipeline/core。 */
 
 const $ = (id) => document.getElementById(id);
 const BRL = (v) => (v == null ? '--' : 'R$ ' + Number(v).toFixed(2));
@@ -30,10 +30,10 @@ async function load() {
       try {
         const ri = await fetch('data/history/index.json', { cache: 'no-store' });
         if (ri.ok) runs = (await ri.json()).runs || [];
-      } catch (e) { /* 归档拿不到不影响主页面 */ }
+      } catch (e) { /* 归档缺失不影响主页面 */ }
       return { data, runs };
     }
-  } catch (e) { /* file:// 下会走到这里 */ }
+  } catch (e) { /* file:// 场景 */ }
   const m = window.__CODESCALE__;
   if (m) return { data: m.data, runs: m.runs || [] };
   return null;
@@ -56,19 +56,19 @@ function head(d) {
 }
 
 /* ---------------- 本版变化 ---------------- */
-/* 只在「这一版其实没有新东西」时出现。每天自动跑，源没接通时每次结果都一样，
-   不承认这件事就等于每天用同一批数冒充新一期。 */
+/* 仅在本次运行无新增内容时显示。定时任务每日执行，数据源未接通时结果相同，
+   该状态需在页面显著位置标明。 */
 function notice(d) {
   const x = d.delta || {};
   const lag = d.meta.freshness_days;
   let html = '';
   if (!x.has_prev) {
-    html = `<div class="warnbar"><span><b>第一份快照</b>　没有上一版可比。明天这一页会显示条数、商品与价格的变动。</span></div>`;
+    html = `<div class="warnbar"><span><b>首份快照</b>　无上一版本可供比较。后续版本将显示样本数、商品与价格的变动。</span></div>`;
   } else if (x.changed === false) {
-    html = `<div class="warnbar"><span><b>本版没有新数据</b>　本次运行没有取到任何新记录，
-      条数、商品、价格与 ${x.prev_date || '上一版'} 逐项相同。这不是新一期行情，是同一批数据的再次统计。` +
+    html = `<div class="warnbar"><span><b>本版无新增数据</b>　本次运行未获取到新记录，
+      样本数、商品与价格与 ${x.prev_date || '上一版本'} 逐项一致。当前内容为既有数据的重新统计。` +
       (lag != null && lag >= 3
-        ? `　数据观测日仍是 <b>${d.meta.data_date || '--'}</b>，距今 <b>${lag}</b> 天。要换一批数，只能从数据源进来。`
+        ? `　数据观测日仍为 <b>${d.meta.data_date || '--'}</b>，距今 <b>${lag}</b> 天。数据更新需通过数据源接入。`
         : '') +
       `</span></div>`;
   }
@@ -80,11 +80,11 @@ function kpis(d) {
   const c = d.cost;
   const noComp = d.comparable_n === 0;
   const cards = [
-    ['今日样本', NUM(d.n), `去重后 · 原始 ${d.n_raw} 条`, ''],
+    ['本期样本', NUM(d.n), `去重后 · 原始 ${d.n_raw} 条`, ''],
     ['全样本中位价', BRL(d.median), '跨品类混合，不作定价依据', 'warn'],
     ['不投流保本价', BRL(c.be_org), `投流需 ${BRL(c.be_full)}`, 'bad'],
     ['手工款可比样本', `${d.comparable_n} 条`,
-      noComp ? '今天没有可比的' : `中位 ${BRL(d.comparable.median)}`, noComp ? 'bad' : 'ok'],
+      noComp ? '暂无可比样本' : `中位 ${BRL(d.comparable.median)}`, noComp ? 'bad' : 'ok'],
   ];
   $('kpis').innerHTML = cards.map(([l, v, note, k]) =>
     `<div class="kpi ${k}"><div class="lab">${l}</div><div class="val">${v}</div>
@@ -94,8 +94,8 @@ function kpis(d) {
 function verdict(d) {
   const v = d.verdict || [];
   $('verdict').innerHTML = v.length
-    ? `<div class="hd">今日判读</div>` + v.map((s) => `<p>${s}</p>`).join('')
-    : `<div class="hd">今日判读</div><p>本次运行没有生成判读，请看报告原文。</p>`;
+    ? `<div class="hd">本期判读</div>` + v.map((s) => `<p>${s}</p>`).join('')
+    : `<div class="hd">本期判读</div><p>本次运行未生成判读内容，详见日报。</p>`;
 }
 
 /* ---------------- 价格带 ---------------- */
@@ -109,8 +109,8 @@ function bands(d) {
       <div class="vv"><b>${b.n}</b>${b.median == null ? '' : BRL(b.median)}</div>
     </div>`).join('');
   const lo = bs.length ? bs[0].label : '', hi = bs.length ? bs[bs.length - 1].label : '';
-  $('axis').innerHTML = `<span>${lo}</span><span>深色 = 站在保本线 ${BRL(d.cost.be_org)} 以上</span><span>${hi}</span>`;
-  $('bands-meta').textContent = `${d.n} 条 · 保本线以上 ${d.over_be} 条`;
+  $('axis').innerHTML = `<span>${lo}</span><span>深色：高于不投流保本价 ${BRL(d.cost.be_org)}</span><span>${hi}</span>`;
+  $('bands-meta').textContent = `${d.n} 条 · 保本价以上 ${d.over_be} 条`;
 }
 
 /* ---------------- 规格 / 分层 ---------------- */
@@ -158,7 +158,7 @@ function econ(d) {
 
   const line = (r, col, dash) => `<polyline points="${X(xmin)},${Y(net(xmin, r))} ${X(xmax)},${Y(net(xmax, r))}"
     fill="none" stroke="${col}" stroke-width="2.2" ${dash ? 'stroke-dasharray="5 4"' : ''}/>`;
-  // 不再填充线下面积：零轴以下那段填出来和盈利区同色，反而会让人把亏损读成收益
+  // 零轴以下区域使用浅色底纹，与盈利区区分
   const lossBand = `<rect x="${L}" y="${Y(0)}" width="${W - L - R}" height="${Y(ymin) - Y(0)}"
     fill="rgba(255,90,110,.05)"/>`;
 
@@ -180,7 +180,7 @@ function econ(d) {
     </svg>
     <div class="legend">
       <span><i style="background:#22d3ee"></i>不投流（平台+税+SFP ${PCT(c.r_org, 1)}）</span>
-      <span><i style="background:#7c5cff"></i>投流（再加广告+达人 ${PCT(c.r_full, 1)}）</span>
+      <span><i style="background:#7c5cff"></i>投流（含广告+达人 ${PCT(c.r_full, 1)}）</span>
       <span style="color:#5f6478">横轴：售价 BRL　纵轴：单副净利 BRL</span>
     </div>`;
 
@@ -205,13 +205,13 @@ const SGN = (v) => (v == null ? '--' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math
 function scale(d) {
   const s = d.scale;
   if (!s || !s.grid || !s.grid.length) {
-    $('scale-lead').innerHTML = '<div class="empty">这一版没有生成规模刻度。</div>';
+    $('scale-lead').innerHTML = '<div class="empty">本版未生成规模刻度。</div>';
     $('scale-meta').textContent = '--';
     return;
   }
   const grid = s.grid, targets = s.targets || [];
 
-  // 开场句：最低价档 vs 单件净利最接近十元那档，都用绝对数，不写倍数
+  // 取最低价档与单件净利最接近十元的一档做对比，使用绝对数值
   const lo = grid[0];
   const rest = grid.slice(1);
   const mid = rest.length ? rest.reduce((a, b) =>
@@ -223,15 +223,15 @@ function scale(d) {
     const uMid = t.by_price[grid.indexOf(mid)].units;
     if (uLo && uMid) {
       lead = `<div class="verdict" style="margin:0 0 4px">
-        贴着保本线定价（${BRL(lo.price)}）时单件只赚 <b class="pos">${SGN(lo.unit_org)}</b>，
-        要卖 <b>${NUMK(uLo)} 单</b>才够 <b>R$ ${NUMK(t.target)}</b> 的月净利。
-        把价抬到 ${BRL(mid.price)}，单件 <b class="pos">${SGN(mid.unit_org)}</b>，
-        <b>${NUMK(uMid)} 单</b>就够。</div>`;
+        按 ${BRL(lo.price)} 定价时，单件净利为 <b class="pos">${SGN(lo.unit_org)}</b>，
+        达到 <b>R$ ${NUMK(t.target)}</b> 的月净利需 <b>${NUMK(uLo)} 单</b>。
+        定价提高至 ${BRL(mid.price)} 后，单件净利 <b class="pos">${SGN(mid.unit_org)}</b>，
+        所需单量为 <b>${NUMK(uMid)} 单</b>。</div>`;
     }
   }
   $('scale-lead').innerHTML = lead;
 
-  // 行底色按单件净利分档，一眼看出哪档的斜率最陡
+  // 行底色按单件净利分档
   const lv = (u) => (u <= 0 ? 's-lv0' : u < 5 ? 's-lv1' : u < 15 ? 's-lv2' : 's-lv3');
   const head = s.volumes.map((v) => `<th>${NUMK(v)} 单</th>`).join('');
   const rows = grid.map((g) => {
@@ -242,8 +242,8 @@ function scale(d) {
   $('scale-grid').innerHTML = `
     <table><thead><tr><th>售价</th><th>单件净利</th>${head}</tr></thead><tbody>${rows}</tbody></table>
     <div class="legend" style="margin-top:10px">
-      <span><i style="background:#2bd98a"></i>绿 = 这一档单件盈利</span>
-      <span><i style="background:#ff5a6e"></i>红 = 每卖一副都在亏</span>
+      <span><i style="background:#2bd98a"></i>绿色：该档位单件盈利</span>
+      <span><i style="background:#ff5a6e"></i>红色：该档位单件亏损</span>
       <span style="color:#5f6478">月净利 =（售价 ×（1 − 费率）− 到仓成本）× 月单量</span>
     </div>`;
 
@@ -254,26 +254,26 @@ function scale(d) {
       const b = x.by_price[i];
       return b.units
         ? `<td>${NUMK(b.units)} 单</td>`
-        : `<td style="color:#ff5a6e">到不了</td>`;
+        : `<td style="color:#ff5a6e">无法达到</td>`;
     }).join('');
     return `<tr><td>${BRL(g.price)}</td><td>${SGN(g.unit_org)}</td>${cells}</tr>`;
   }).join('');
   $('scale-need').innerHTML = `
     <table><thead><tr><th>售价</th><th>单件净利</th>${tHead}</tr></thead><tbody>${tRows}</tbody></table>
     <div class="warnbar" style="margin-top:14px"><span>
-      <b>这是刻度，不是预测</b>　单量是假设出来的横轴，不含退货、滞销、活动亏损与汇率波动。
-      它回答「卖到这个量账上是什么样」，不回答「能不能卖到这个量」。</span></div>`;
+      <b>刻度说明</b>　单量为假设的横轴变量，不含退货、滞销、活动亏损与汇率波动。
+      本表回答「达到该销量时账目结果如何」，不回答「能否达到该销量」。</span></div>`;
 
   $('scale-meta').textContent = `${grid.length} 档售价 × ${s.volumes.length} 档单量 · ${s.basis}口径`;
 }
 
 /* ---------------- 成本敏感性 ---------------- */
-/* 一次只动一个变量。表里的区间是该变量 ±step 时保本价的落点，
-   不按正负排序，只给区间，免得汇率那种反向变动的行被读错方向。 */
+/* 每次仅变动一个变量。表中区间为该变量 ±step 时保本价的落点，
+   按变量列出而非按正负排序，避免反向变动的行被误读。 */
 function sens(d) {
   const s = d.sensitivity;
   if (!s || !s.rows || !s.rows.length) {
-    $('sens-lead').innerHTML = '<div class="empty">这一版没有生成敏感性表。</div>';
+    $('sens-lead').innerHTML = '<div class="empty">本版未生成敏感性表。</div>';
     $('sens-meta').textContent = '--';
     return;
   }
@@ -310,9 +310,9 @@ function sens(d) {
   const top = s.rows[0];
   $('sens-lead').innerHTML = `
     <div class="verdict" style="margin:0 0 4px">
-      单看摆幅，最大的一项是 <b>${top.label}</b>，动 ${step}% 就让每副的保本线挪 <b>${BRL(top.swing)}</b>。
-      但摆幅最大不等于最该动：汇率是被动风险，砍不动；采购价是唯一既动得大又谈得下来的。
-      想降价，先谈采购，再谈头程，最后才是费率。</div>`;
+      按摆幅排序，影响最大的一项为 <b>${top.label}</b>，变动 ${step}% 时保本价移动 <b>${BRL(top.swing)}</b>。
+      摆幅用于确定关注优先级：汇率属于外部因素，不可直接调整；采购价属于可协商项。
+      成本管控的优先顺序为采购价、头程运费、费率。</div>`;
 
   $('sens-table').innerHTML = `
     <table><thead><tr>
@@ -321,11 +321,11 @@ function sens(d) {
       <th>${BRL(s.anchor)} 时单件净利</th>
     </tr></thead><tbody>${rows}</tbody></table>
     <div class="legend" style="margin-top:10px">
-      <span style="color:#5f6478">摆幅 = 该项单独动 ${step}% 时保本价的变动额，其余变量按住不动</span>
+      <span style="color:#5f6478">摆幅：该变量单独变动 ${step}% 时保本价的变化额，其余变量保持不变</span>
     </div>
     <div class="warnbar" style="margin-top:14px"><span>
-      <b>摆幅不能相加</b>　汇率与采购是同一笔钱的两个视角，两项同时动不等于两数相加。
-      这是排优先级用的尺子，不是预测。</span></div>`;
+      <b>摆幅不可相加</b>　汇率与采购成本构成同一笔支出的两个视角，两项同时变动不等于两者相加。
+      本表用于确定关注顺序，不构成预测。</span></div>`;
 
   $('sens-meta').textContent = `${s.rows.length} 项 · 单项 ±${step}% · 基准 ${BRL(b.be_org)}`;
 }
@@ -335,8 +335,8 @@ function comp(d) {
   const c = d.cost, n = d.comparable_n;
   if (!n) {
     $('comp').innerHTML = `<div class="empty">
-      今天没有 10 片手工甲的可比样本。要建这个池子，需要 Kalodata 导出或客户提供竞品清单。<br>
-      在没有这组样本之前，任何「该定多少钱」的结论都是猜的。</div>`;
+      本版无 10 片手工甲可比样本。建立该样本池需通过 Kalodata 导出，或由客户提供竞品清单。<br>
+      缺少该类样本时，不给出定价结论。</div>`;
     $('comp-meta').textContent = '0 条';
     return;
   }
@@ -346,16 +346,16 @@ function comp(d) {
     <tr><td>${x.title}</td><td>${BRL(x.price)}</td><td style="color:#8b91a8">${PLATFORM[x.platform] || x.platform}</td></tr>`).join('');
   $('comp').innerHTML = `
     <div class="kpis" style="margin:0 0 16px">
-      <div class="kpi"><div class="lab">样本</div><div class="val">${s.n}</div><div class="note">手工/定制款</div></div>
+      <div class="kpi"><div class="lab">样本</div><div class="val">${s.n}</div><div class="note">手工或定制款</div></div>
       <div class="kpi"><div class="lab">中位价</div><div class="val">${BRL(s.median)}</div>
         <div class="note">${BRL(s.p25)} – ${BRL(s.p75)}</div></div>
-      <div class="kpi ${net >= 0 ? 'ok' : 'bad'}"><div class="lab">按中位价卖 · 不投流净利</div>
-        <div class="val">${net >= 0 ? '+' : ''}${net.toFixed(2)}</div><div class="note">已扣 ${BRL(c.fixed)} 到仓</div></div>
-      <div class="kpi"><div class="lab">相对不投流保本</div><div class="val">${(s.median / c.be_org).toFixed(2)}×</div>
-        <div class="note">保本 ${BRL(c.be_org)}</div></div>
+      <div class="kpi ${net >= 0 ? 'ok' : 'bad'}"><div class="lab">按中位价销售 · 不投流净利</div>
+        <div class="val">${net >= 0 ? '+' : ''}${net.toFixed(2)}</div><div class="note">已扣除 ${BRL(c.fixed)} 到仓成本</div></div>
+      <div class="kpi"><div class="lab">相对不投流保本价</div><div class="val">${(s.median / c.be_org).toFixed(2)}×</div>
+        <div class="note">保本价 ${BRL(c.be_org)}</div></div>
     </div>
     <table><thead><tr><th>商品</th><th>挂牌价</th><th>平台</th></tr></thead><tbody>${items}</tbody></table>
-    ${s.n < 5 ? `<div class="warnbar"><span><b>样本不足</b>　${s.n} 条且部分同价，只能当价格上限看。补到 20 条以上再谈定价。</span></div>` : ''}`;
+    ${s.n < 5 ? `<div class="warnbar"><span><b>样本量不足</b>　当前 ${s.n} 条且部分同价，仅可作为价格上限参考。样本达到 20 条以上后再进行定价分析。</span></div>` : ''}`;
   $('comp-meta').textContent = `${s.n} 条 · 中位 ${BRL(s.median)}`;
 }
 
@@ -375,8 +375,8 @@ function srcs(d) {
 
   if (d.snapshot_rate < 0.99) {
     $('warn').innerHTML = `<div class="warnbar"><span>
-      <b>证据链缺口</b>　快照留存 ${PCT(d.snapshot_rate)}。记录里没有当时的页面快照，
-      客户点开链接看到的价格可能和表里不一致，而我们拿不出截图。补快照是下一版的头号任务。</span></div>`;
+      <b>证据链缺口</b>　快照留存率 ${PCT(d.snapshot_rate)}。记录缺少采集时的页面快照，
+      链接所示价格可能与表内数据不一致，且无法提供截图佐证。补充页面快照为后续版本的优先事项。</span></div>`;
   } else {
     $('warn').innerHTML = '';
   }
@@ -385,11 +385,10 @@ function srcs(d) {
 /* ---------------- 归档 ---------------- */
 function runs(d, list) {
   if (!list.length) {
-    $('runs').innerHTML = `<div class="empty">还没有历史快照，明天这时会有第二份。</div>`;
+    $('runs').innerHTML = `<div class="empty">暂无历史快照。</div>`;
   } else {
     $('runs').innerHTML = list.slice().reverse().map((r) => {
-      // 数据没变的那几版要标出来。否则归档看上去像每天都在更新，
-      // 其实只是同一批数又算了一遍。
+      // 数据未变化的版本需明确标记，避免归档看起来每日都在更新
       const mark = r.changed === false ? ' <span class="tag off">未变</span>'
         : r.changed === true ? ' <span class="tag ok">有变</span>' : '';
       return `
@@ -397,7 +396,7 @@ function runs(d, list) {
         <div class="d">${r.date}</div>
         <div>${r.n} 条${mark}</div>
         <div>${BRL(r.median)}</div>
-        <div>保本线以上 ${PCT(r.over_be_ratio)} · 源 ${r.sources_ok}/${r.sources_total}
+        <div>保本价以上 ${PCT(r.over_be_ratio)} · 源 ${r.sources_ok}/${r.sources_total}
           ${r.data_date ? ` · 观测日 ${r.data_date}` : ''}</div>
         <div><a href="${r.report || 'reports/' + r.date + '.html'}">日报</a></div>
       </div>`;
@@ -410,7 +409,7 @@ function foot(d) {
   const c = d.cost, m = d.meta;
   $('foot').innerHTML = `
     <b>口径</b>　${c.status}。全部金额为巴西雷亚尔，参考汇率 R$1 ≈ ¥${c.fx}。<br>
-    <b>不可比</b>　自家 ${c.product}，市场样本以 24 片机器甲为主，两者不能相减。本页不给"该定多少钱"的结论，只给成本线与行情分布。<br>
+    <b>不可比</b>　对标产品为 ${c.product}，市场样本以 24 片机器甲为主，两者不可直接相减。本页不提供定价结论，仅提供成本线与行情分布。<br>
     <b>生成</b>　${m.generated_at} · 管线自动生成，未经人工改写 · 版本 v${m.version} / schema ${m.schema}<br>
     <b>码尺 CodeScale</b>　${m.tagline} · 每日 ${(m.schedule && m.schedule.cron) || '20:00'} 自动更新`;
 }
@@ -418,7 +417,7 @@ function foot(d) {
 (async function () {
   const got = await load();
   if (!got) {
-    $('sub').textContent = '没有找到数据。先在项目根目录跑 python pipeline/run.py。';
+    $('sub').textContent = '未找到数据文件。请在项目根目录执行 python pipeline/run.py。';
     $('stamp').innerHTML = '<span>无数据</span>';
     return;
   }
