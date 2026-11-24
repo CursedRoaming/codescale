@@ -34,6 +34,9 @@ jobs:
 
       # 先过测试再跑管线。管线算错不会报错，只会静默写出一组错数，
       # 而那组数会当天就发到客户手上。这道门比回滚便宜。
+      - name: 安装依赖
+        run: python -m pip install python-docx
+
       - name: 跑测试
         run: python -m unittest discover -s pipeline/tests -v
 

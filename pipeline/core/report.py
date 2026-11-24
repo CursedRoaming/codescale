@@ -444,4 +444,11 @@ def write(p):
         f.write(render_html(p))
     with open(mp, 'w', encoding='utf-8') as f:
         f.write(render_md(p))
+    # Word 版与 HTML 同源同口径，供分析报告页直接下载。
+    try:
+        from .docx_report import write_docx
+        write_docx(p)
+    except ImportError:
+        # 部署环境未装 python-docx 时不影响 HTML / MD 正常产出。
+        pass
     return hp, mp

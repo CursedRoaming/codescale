@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>分析报告 · 码尺 CodeScale</title>
+<meta name="description" content="按章节查看当期分析报告的全部结论与明细表，并按期下载 Word 版本。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body data-page="report">
+<div id="side-slot"></div>
+<div class="main">
+
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>分析报告</b></div>
+    <div class="stamp" id="stamp"><span class="pulse"></span><span>载入中</span></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">ANALYSIS REPORT · 巴西站</div>
+      <h1>分析报告</h1>
+      <div class="sub" id="sub">正在读取最新一期报告……</div>
+    </div>
+
+    <div class="repbar">
+      <label style="font-size:12px;color:var(--dim)">期次　
+        <select id="period" style="background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:7px;padding:7px 10px;font:inherit;font-size:12px"></select>
+      </label>
+      <span class="grow"></span>
+      <a class="btn main" id="dl" href="#" download>下载 Word 报告</a>
+      <a class="btn" id="raw" href="#" target="_blank" rel="noopener">印刷版</a>
+    </div>
+    <div class="toc" id="toc"></div>
+
+    <div id="banner"></div>
+    <section id="r-conc">
+      <div class="sh"><span class="idx">00</span><h2>结论</h2></div>
+      <div class="verdict" id="conc"></div>
+    </section>
+    <section id="r-kpi">
+      <div class="sh"><span class="idx">01</span><h2>关键指标</h2></div>
+      <div class="kpis" id="kpis"></div>
+    </section>
+    <section id="r-cost">
+      <div class="sh"><span class="idx">02</span><h2>成本与保本价</h2></div>
+      <p class="lead">对标产品的成本结构独立于市场价格。所有保本判断以此为基础。表内测算，非实际发生。</p>
+      <div class="card"><div id="cost-body"></div></div>
+    </section>
+    <section id="r-band">
+      <div class="sh"><span class="idx">03</span><h2>价格带分布</h2></div>
+      <p class="lead">按挂牌价分档。高于不投流保本价的档位在表中标出。</p>
+      <div class="card" id="band-body"></div>
+    </section>
+    <section id="r-spec">
+      <div class="sh"><span class="idx">04</span><h2>规格与分层</h2></div>
+      <p class="lead">按标题里的片数分组；同一规格里再按品牌溢价拆一层。未标规格占比越高，中位价越不可直接引用。</p>
+      <div class="card"><div id="spec-body"></div><div id="tier-body" style="margin-top:20px"></div></div>
+    </section>
+    <section id="r-econ">
+      <div class="sh"><span class="idx">05</span><h2>单副盈亏</h2></div>
+      <p class="lead">到仓成本固定，费率按售价比例计提。净利与售价呈线性关系。</p>
+      <div class="card" id="econ-body"></div>
+    </section>
+    <section id="r-scale">
+      <div class="sh"><span class="idx">06</span><h2>规模刻度</h2></div>
+      <p class="lead" id="scale-lead"></p>
+      <div class="card"><div id="scale-body"></div></div>
+    </section>
+    <section id="r-sens">
+      <div class="sh"><span class="idx">07</span><h2>成本敏感性</h2></div>
+      <p class="lead">各成本项单独变动 10% 时保本价的对应变化。摆幅不可相加，仅用于确定关注顺序。</p>
+      <div class="card" id="sens-body"></div>
+    </section>
+    <section id="r-move">
+      <div class="sh"><span class="idx">08</span><h2>价格异动</h2></div>
+      <div class="card" id="move-body"></div>
+    </section>
+    <section id="r-src">
+      <div class="sh"><span class="idx">09</span><h2>数据可靠性</h2></div>
+      <p class="lead">各数据源的真实状态，按实际情况标注。</p>
+      <div class="card" id="src-body"></div>
+    </section>
+    <section id="r-note">
+      <div class="sh"><span class="idx">10</span><h2>口径与限制</h2></div>
+      <div class="card" id="note-body"></div>
+    </section>
+
+    <footer id="foot"></footer>
+  </div>
+</div>
+
+<script src="data/latest.js?v=20261120123341"></script>
+<script src="shell.js"></script>
+<script src="report.js"></script>
+</body>
+</html>

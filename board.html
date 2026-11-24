@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>看板 · 码尺 CodeScale</title>
+<meta name="description" content="巴西穿戴甲每日行情、成本与保本线。管线自动生成，数据可回溯。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body data-page="board">
+<div id="side-slot"></div>
+<div class="main">
+
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>看板</b></div>
+    <div class="stamp" id="stamp"><span class="pulse"></span><span>载入中</span></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow" id="eyebrow">DAILY READS · 巴西站</div>
+      <h1>穿戴甲 · 每日行情与保本线</h1>
+      <div class="sub" id="sub">正在读取最新一份快照……</div>
+    </div>
+
+    <div id="notice"></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="verdict" id="verdict"></div>
+
+    <section id="s-bands">
+      <div class="sh"><span class="idx">01</span><h2>价格带分布</h2><span class="meta" id="bands-meta"></span></div>
+      <p class="lead">按挂牌价分档。深色档位均高于不投流保本价，属于当前可实现盈亏平衡的价格区间。</p>
+      <div class="card"><div id="bands"></div><div class="axis" id="axis"></div></div>
+    </section>
+
+    <section id="s-spec">
+      <div class="sh"><span class="idx">02</span><h2>规格与分层</h2><span class="meta" id="spec-meta"></span></div>
+      <p class="lead">巴西市场的「穿戴甲」包含三个细分：24 片机器甲、品牌款与手工定制款。三者定价逻辑不同，合并计算中位价不具参考意义。</p>
+      <div class="card"><div id="specs"></div><div id="tiers" style="margin-top:22px"></div></div>
+    </section>
+
+    <section id="s-econ">
+      <div class="sh"><span class="idx">03</span><h2>单副盈亏刻度</h2><span class="meta" id="econ-meta"></span></div>
+      <p class="lead">到仓成本固定，费率按售价比例计提，因此净利与售价呈线性关系。曲线与零轴的交点即为保本价。</p>
+      <div class="card"><div id="econ-chart"></div><div id="econ-table" style="margin-top:18px"></div></div>
+    </section>
+
+    <section id="s-scale">
+      <div class="sh"><span class="idx">04</span><h2>规模刻度</h2><span class="meta" id="scale-meta"></span></div>
+      <p class="lead">单件净利决定达到目标月净利所需的销量。到仓成本固定、费率按售价比例计提，因此定价的少量变化会显著影响所需单量。横轴单量为假设值，不构成预测。</p>
+      <div class="card">
+        <div id="scale-lead"></div>
+        <div id="scale-grid" style="margin-top:18px"></div>
+        <div class="lead" style="margin:20px 0 10px">达到目标月净利所需单量，按价位列示：</div>
+        <div id="scale-need"></div>
+      </div>
+    </section>
+
+    <section id="s-sens">
+      <div class="sh"><span class="idx">05</span><h2>成本敏感性</h2><span class="meta" id="sens-meta"></span></div>
+      <p class="lead">各成本项单独变动 10% 时保本价的对应变化。该表用于确定成本管控的优先顺序。</p>
+      <div class="card">
+        <div id="sens-lead"></div>
+        <div id="sens-table" style="margin-top:18px"></div>
+      </div>
+    </section>
+
+    <section id="s-comp">
+      <div class="sh"><span class="idx">06</span><h2>手工款对标</h2><span class="meta" id="comp-meta"></span></div>
+      <p class="lead">对标产品为 10 片手工甲。本节仅纳入同类样本，其他规格不参与对比。</p>
+      <div class="card" id="comp"></div>
+    </section>
+
+    <section id="s-src">
+      <div class="sh"><span class="idx">07</span><h2>数据源健康</h2><span class="meta" id="src-meta"></span></div>
+      <p class="lead">数据源状态按实际情况展示。未接入、被拦截等状态均如实标注，历史数据不标记为最新。</p>
+      <div class="card" id="srcs"></div>
+      <div id="warn"></div>
+      <p style="margin-top:14px;color:#8b91a8">
+        各项数据的用途与缺失影响：<a href="data-needs.html">数据需求清单 →</a><br>
+        授权流程、权限范围与凭证管理：<a href="connect.html">接入中心 →</a><br>
+        凭证保存与本机台账的边界：<a href="security.html">安全说明 →</a>
+      </p>
+    </section>
+
+    <section id="s-runs">
+      <div class="sh"><span class="idx">08</span><h2>运行归档</h2><span class="meta" id="runs-meta"></span></div>
+      <p class="lead">每日生成一份不可变快照。报告发布后，其中数据不再变更。Word 版本可在分析报告页按期下载。</p>
+      <div class="card"><div class="runs" id="runs"></div></div>
+    </section>
+
+    <footer id="foot"></footer>
+  </div>
+</div>
+
+<script src="data/latest.js?v=20261120123341"></script>
+<script src="app.js"></script>
+<script src="shell.js"></script>
+</body>
+</html>

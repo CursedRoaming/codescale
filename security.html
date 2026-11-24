@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>安全说明 · 码尺 CodeScale</title>
+<meta name="description" content="凭证保存位置、权限边界、页面请求行为与运维交接约定。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+<style>
+  .noform{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:13px 16px;
+    border:1px solid rgba(43,217,138,.3);background:rgba(43,217,138,.06);border-radius:10px;
+    font-size:12.5px;color:#b9e7d0}
+  .noform b{color:var(--down)}
+  code{font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+    background:#0e1018;border:1px solid var(--line);border-radius:5px;
+    padding:1px 6px;color:var(--acc2);white-space:nowrap}
+  pre{margin:10px 0 0;background:#0e1018;border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:0;padding:0;color:#cfd3e0;white-space:pre;display:block}
+  .badge{font-size:10px;letter-spacing:1px;color:var(--warn);border:1px solid rgba(240,166,0,.32);
+    background:rgba(240,166,0,.08);border-radius:5px;padding:2px 7px;font-weight:600}
+  .kv td:first-child{width:210px;color:var(--ink);font-weight:600}
+  ul.clean{list-style:none;margin:0;padding:0}
+  ul.clean li{font-size:12.5px;color:var(--dim);padding:7px 0 7px 20px;position:relative;line-height:1.7}
+  ul.clean li::before{content:"";position:absolute;left:2px;top:15px;width:6px;height:6px;
+    border-radius:50%;background:var(--acc)}
+  ul.clean li b{color:var(--ink);font-weight:600}
+  @media(max-width:760px){.kv td:first-child{width:auto;display:block;padding-bottom:0;border-bottom:0}}
+</style>
+</head>
+<body data-page="security">
+<div id="side-slot"></div>
+<div class="main">
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>安全说明</b></div>
+    <div class="stamp"><span>无表单 · 无上报</span></div>
+  </div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">SECURITY &amp; HANDOFF · 巴西站</div>
+    <h1>安全说明</h1>
+    <div class="sub">凭证保存位置、权限边界、页面请求行为与运维交接约定。面向使用者的是第 01 节，面向开发者的是第 02 节。</div>
+  </div>
+
+  <div class="noform"><span>
+    <b>页面说明</b>　本站不设账号密码输入框，不接收 token，不上传台账内容。
+    账号密码仅在对应平台的官方网站输入，不经过本站。
+  </span></div>
+
+  <section>
+    <div class="sh"><span class="idx">01</span><h2>凭证与数据边界</h2><span class="meta">作为责任边界</span></div>
+    <div class="card">
+      <ul class="clean">
+        <li><b>不保存明文密码。</b> Kalodata 登录由使用者在浏览器内自行完成，脚本不读取、不保存、不传输密码，仅保留浏览器会话。</li>
+        <li><b>凭据仅存本机。</b> token 保存在执行脚本设备的 <code>~/.workbuddy/secrets/meli/</code> 目录，不进入网页、公开仓库或聊天工具。</li>
+        <li><b>原始表不留副本。</b> 项目结束后删除。报告中不出现客户个人信息，未经许可不对外发布。</li>
+        <li><b>页面不请求外部服务。</b> 接入中心的台账只写入本机浏览器的 localStorage，键名 <code>codescale.connect.v1</code>。页面在打开与填写过程中均不发起网络请求。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">02</span><h2>运维交接</h2><span class="meta"><span class="badge">内部</span> 供开发者参考</span></div>
+    <p class="lead">以下命令均在本机执行。GitHub Actions 不持有浏览器会话或 token，仅负责发布。</p>
+
+    <div class="card" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th style="width:180px">凭证</th><th>位置与说明</th></tr></thead>
+        <tbody class="kv">
+          <tr><td>美客多应用凭证</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/meli/app.json</code>　App ID 与 Secret Key</td></tr>
+          <tr><td>美客多 token</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/meli/token.json</code>　由脚本写入，不手工修改</td></tr>
+          <tr><td>Kalodata 会话</td><td style="text-align:left;color:var(--dim)"><code>~/.workbuddy/secrets/kalodata/state.json</code>　浏览器登录态，不含密码</td></tr>
+          <tr><td>仓库排除规则</td><td style="text-align:left;color:var(--dim)">以上目录均不在 <code>09_码尺平台/</code> 内，已由 <code>.gitignore</code> 排除</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <p class="lead" style="margin-top:0"><b>执行顺序</b>　前置条件：在 <code>developers.mercadolivre.com.br</code> 创建应用，Redirect URI 填写 <code>http://localhost:3333/callback</code>，权限勾选 <code>read</code> 与 <code>offline_access</code>。</p>
+<pre><code>python pipeline/tools/meli_auth.py      # 完成浏览器授权，token 自动落盘
+python pipeline/tools/meli_token.py     # 自动续期，access_token 6 小时、refresh 180 天
+python pipeline/tools/meli_probe.py     # 试拉巴西穿戴甲数据，核对字段是否满足定价需要</code></pre>
+      <p class="lead" style="margin-top:12px">会话失效时，「数据源健康」面板会显示 <code>blocked</code>，不会静默返回空数据。重新执行第一条命令即可。<code>python</code> 需指向已安装 playwright 的解释器，PowerShell 中的默认 <code>python</code> 可能指向 WindowsApps 的空壳。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">03</span><h2>发布与归档</h2></div>
+    <div class="card">
+      <table>
+        <thead><tr><th style="width:180px">项目</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>自动运行</td><td style="text-align:left;color:var(--dim)">每日 20:00 生成一份不可变快照与报告。历史快照不随后续运行改写。</td></tr>
+          <tr><td>发布范围</td><td style="text-align:left;color:var(--dim)">只有站点文件、数据与报告进入公开仓库。凭证目录与账号清单不在仓库内。</td></tr>
+          <tr><td>报告内容</td><td style="text-align:left;color:var(--dim)">只含商品行情与成本测算，不含订单明细、客户个人信息或客户后台数据。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <b>边界</b>　本站不收集账号、密码或 token。无表单、无提交、无上报<br>
+    <b>更新</b>　2026-11-24 · 依据授权脚本与凭证目录实际情况编写<br>
+    <b>码尺 CodeScale</b>　跨境选品数据台
+  </footer>
+</div>
+</div>
+<script src="shell.js"></script>
+</body>
+</html>

@@ -3,118 +3,97 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>码尺 CodeScale · 跨境选品数据台</title>
-<meta name="description" content="码尺 CodeScale：巴西穿戴甲每日行情、成本与保本线。管线自动生成，数据可回溯。">
+<title>首页 · 码尺 CodeScale</title>
+<meta name="description" content="码尺 CodeScale 跨境选品数据台：行情看板、分析报告、数据源接入与安全约定。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
 <link rel="stylesheet" href="theme.css">
 </head>
-<body>
+<body data-page="home">
+<div id="side-slot"></div>
+<div class="main">
 
-<div class="top">
-  <div class="top-in">
-    <div class="logo">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <rect x="1.5" y="1.5" width="21" height="21" rx="6" stroke="#7c5cff" stroke-width="1.5"/>
-        <path d="M7 16.5V7.5h6.4L17 11.1v5.4z" stroke="#e9ebf2" stroke-width="1.4" stroke-linejoin="round"/>
-        <path d="M9.6 11.2h2.2M9.6 13.6h4.2" stroke="#7c5cff" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
-      <span class="nm">码尺<em>CODESCALE</em></span>
-    </div>
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>首页</b></div>
     <div class="stamp" id="stamp"><span class="pulse"></span><span>载入中</span></div>
-    <nav class="nav">
-      <a href="#s-bands">行情</a>
-      <a href="#s-spec">规格</a>
-      <a href="#s-econ">盈亏</a>
-      <a href="#s-scale">规模</a>
-      <a href="#s-sens">敏感</a>
-      <a href="#s-comp">对标</a>
-      <a href="#s-src">数据源</a>
-      <a href="#s-runs">归档</a>
-      <a href="data-needs.html">数据需求</a>
-      <a href="access.html">接入说明</a>
-      <a href="connect.html">接入中心</a>
-    </nav>
-  </div>
-</div>
+  </div></div>
 
-<div class="wrap">
-
-  <div class="hero">
-    <div class="eyebrow" id="eyebrow">DAILY READS · 巴西站</div>
-    <h1>穿戴甲 · 每日行情与保本线</h1>
-    <div class="sub" id="sub">正在读取最新一份快照……</div>
-  </div>
-
-  <div id="notice"></div>
-  <div class="kpis" id="kpis"></div>
-  <div class="verdict" id="verdict"></div>
-
-  <section id="s-bands">
-    <div class="sh"><span class="idx">01</span><h2>价格带分布</h2><span class="meta" id="bands-meta"></span></div>
-    <p class="lead">按挂牌价分档。深色档位均高于不投流保本价，属于当前可实现盈亏平衡的价格区间。</p>
-    <div class="card"><div id="bands"></div><div class="axis" id="axis"></div></div>
-  </section>
-
-  <section id="s-spec">
-    <div class="sh"><span class="idx">02</span><h2>规格与分层</h2><span class="meta" id="spec-meta"></span></div>
-    <p class="lead">巴西市场的「穿戴甲」包含三个细分：24 片机器甲、品牌款与手工定制款。三者定价逻辑不同，合并计算中位价不具参考意义。</p>
-    <div class="card"><div id="specs"></div><div id="tiers" style="margin-top:22px"></div></div>
-  </section>
-
-  <section id="s-econ">
-    <div class="sh"><span class="idx">03</span><h2>单副盈亏刻度</h2><span class="meta" id="econ-meta"></span></div>
-    <p class="lead">到仓成本固定，费率按售价比例计提，因此净利与售价呈线性关系。曲线与零轴的交点即为保本价。</p>
-    <div class="card"><div id="econ-chart"></div><div id="econ-table" style="margin-top:18px"></div></div>
-  </section>
-
-  <section id="s-scale">
-    <div class="sh"><span class="idx">04</span><h2>规模刻度</h2><span class="meta" id="scale-meta"></span></div>
-    <p class="lead">单件净利决定达到目标月净利所需的销量。到仓成本固定、费率按售价比例计提，因此定价的少量变化会显著影响所需单量。横轴单量为假设值，不构成预测。</p>
-    <div class="card">
-      <div id="scale-lead"></div>
-      <div id="scale-grid" style="margin-top:18px"></div>
-      <div class="lead" style="margin:20px 0 10px">达到目标月净利所需单量，按价位列示：</div>
-      <div id="scale-need"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">CODESCALE · OVERVIEW</div>
+      <h1>跨境选品数据台</h1>
+      <div class="sub" id="sub">面向巴西市场的商品行情、成本线与保本价测算。数据每日自动归档，结论由快照数字驱动。</div>
     </div>
-  </section>
 
-  <section id="s-sens">
-    <div class="sh"><span class="idx">05</span><h2>成本敏感性</h2><span class="meta" id="sens-meta"></span></div>
-    <p class="lead">各成本项单独变动 10% 时保本价的对应变化。该表用于确定成本管控的优先顺序。</p>
-    <div class="card">
-      <div id="sens-lead"></div>
-      <div id="sens-table" style="margin-top:18px"></div>
+    <div class="verdict">
+      <div class="hd">平台说明</div>
+      <p>本平台把行情观察、成本测算与数据接入放在同一处。<b>看板</b>呈现每日快照的结构化指标；<b>分析报告</b>按章节给出同一份数据的完整解读，并提供可下载的 Word 版本；<b>接入中心</b>列出可选数据渠道与操作步骤；<b>安全说明</b>界定凭证与本机台账的边界。</p>
+      <p>报告数字来自数据快照。成本表为<span class="hl">表内测算，不是实际发生额</span>。样本量与观测日随每次运行标注，缺失项据实说明，不以估算值替代实测值。</p>
+      <p>数据需求页为临时入口，用于跟踪尚未补齐的字段。字段补齐后该入口会移除。</p>
     </div>
-  </section>
 
-  <section id="s-comp">
-    <div class="sh"><span class="idx">06</span><h2>手工款对标</h2><span class="meta" id="comp-meta"></span></div>
-    <p class="lead">对标产品为 10 片手工甲。本节仅纳入同类样本，其他规格不参与对比。</p>
-    <div class="card" id="comp"></div>
-  </section>
+    <section>
+      <div class="sh"><span class="idx">01</span><h2>功能模块</h2><span class="meta">点击卡片进入</span></div>
+      <p class="lead">五个常设模块，加一个临时入口。各页面共用同一份数据快照，口径一致。</p>
+      <div class="mods">
+        <a class="mod" href="board.html">
+          <div class="mh"><span class="mi">01</span><span class="mt">看板</span><span class="ma">→</span></div>
+          <div class="md">每日快照的八个观察区：行情、规格、盈亏、规模、敏感、对标、数据源与归档。用于快速定位价格带与保本线的关系。</div>
+          <div class="mtags"><span>价格带</span><span>成本刻度</span><span>源状态</span><span>历史归档</span></div>
+        </a>
+        <a class="mod" href="report.html">
+          <div class="mh"><span class="mi">02</span><span class="mt">分析报告</span><span class="ma">→</span></div>
+          <div class="md">按章节展开当期日报的全部结论与明细表，支持按期切换，并可下载对应版本的 Word 报告。</div>
+          <div class="mtags"><span>结论</span><span>明细表</span><span>Word 下载</span></div>
+        </a>
+        <a class="mod" href="connect.html">
+          <div class="mh"><span class="mi">03</span><span class="mt">接入中心</span><span class="ma">→</span></div>
+          <div class="md">列出可选数据渠道的接入条件与操作步骤，并提供一份只保存在本机浏览器的进度台账。</div>
+          <div class="mtags"><span>接入说明</span><span>渠道对照</span><span>本机台账</span></div>
+        </a>
+        <a class="mod" href="security.html">
+          <div class="mh"><span class="mi">04</span><span class="mt">安全说明</span><span class="ma">→</span></div>
+          <div class="md">说明凭证保存位置、权限范围、页面请求行为与台账存储方式，以及运维交接时必须遵守的边界。</div>
+          <div class="mtags"><span>凭证边界</span><span>本机存储</span><span>交接约定</span></div>
+        </a>
+        <a class="mod" href="board.html#s-runs">
+          <div class="mh"><span class="mi">05</span><span class="mt">归档</span><span class="ma">→</span></div>
+          <div class="md">每次运行生成一份不可变快照，按日期留存。报告发布后其中数据不再变更，可逐期对照。</div>
+          <div class="mtags"><span>不可变快照</span><span>按期对照</span></div>
+        </a>
+        <a class="mod" href="data-needs.html">
+          <div class="mh"><span class="mi">※</span><span class="mt">数据需求</span><span class="ma">→</span></div>
+          <div class="md">临时页面。记录当前缺失字段、用途及缺失时对报告结论的影响。字段补齐后此入口会移除。</div>
+          <div class="mtags"><span>临时</span><span>缺失字段</span><span>影响说明</span></div>
+        </a>
+      </div>
+    </section>
 
-  <section id="s-src">
-    <div class="sh"><span class="idx">07</span><h2>数据源健康</h2><span class="meta" id="src-meta"></span></div>
-    <p class="lead">数据源状态按实际情况展示。未接入、被拦截等状态均如实标注，历史数据不标记为最新。</p>
-    <div class="card" id="srcs"></div>
-    <div id="warn"></div>
-    <p style="margin-top:14px;color:#8b91a8">
-      各项数据的用途与缺失影响：<a href="data-needs.html">数据需求清单 →</a><br>
-      授权流程、权限范围与凭证管理：<a href="access.html">接入说明与安全约定 →</a><br>
-      可选渠道、接入条件与进度记录：<a href="connect.html">渠道接入中心 →</a>
-    </p>
-  </section>
+    <section>
+      <div class="sh"><span class="idx">02</span><h2>当前快照</h2><span class="meta" id="snap-meta"></span></div>
+      <p class="lead">下列数字直接取自最新一期快照，详细口径见看板与分析报告。</p>
+      <div class="kpis" id="kpis"></div>
+    </section>
 
-  <section id="s-runs">
-    <div class="sh"><span class="idx">08</span><h2>运行归档</h2><span class="meta" id="runs-meta"></span></div>
-    <p class="lead">每日生成一份不可变快照。报告发布后，其中数据不再变更。</p>
-    <div class="card"><div class="runs" id="runs"></div></div>
-  </section>
+    <section>
+      <div class="sh"><span class="idx">03</span><h2>使用路径</h2></div>
+      <div class="card">
+        <table>
+          <thead><tr><th style="width:40px">序</th><th style="width:170px">步骤</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td><b>看板读数</b></td><td style="text-align:left">先看数据观测日与源状态，再读价格带与保本线。观测日距今较久时，本期数据只作存量参考。</td></tr>
+            <tr><td>02</td><td><b>报告取结论</b></td><td style="text-align:left">分析报告按章节给出完整解读与全部明细表。需要留存或转发时下载对应期次的 Word 版本。</td></tr>
+            <tr><td>03</td><td><b>补数据源</b></td><td style="text-align:left">数据更新受渠道授权限制。按接入中心的条件与步骤补齐渠道，快照内容才会随运行变化。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <footer id="foot"></footer>
+    <footer id="foot"></footer>
+  </div>
 </div>
 
 <script src="data/latest.js?v=20261120123341"></script>
-<script src="app.js"></script>
+<script src="shell.js"></script>
+<script src="home.js"></script>
 </body>
 </html>
