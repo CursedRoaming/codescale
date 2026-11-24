@@ -49,6 +49,8 @@ python -m unittest discover -s pipeline/tests -v     # 34 个用例
 
 ```
 index.html  app.js  theme.css        前端。无依赖、无构建、无框架
+data-needs.html                      数据需求清单，可单独发给客户
+access.html                          接入说明与安全约定：川哥做什么、交接怎么走。纯说明，无表单
 data/
   latest.json                        最新一份快照（真源）
   latest.js                          file:// 兜底镜像
@@ -139,16 +141,26 @@ pipeline/
 
 ---
 
-## 部署（已完成，2026-11-20）
+## 部署（已迁至 Cloudflare，2026-11-21）
 
-线上地址：**https://cursedroaming.github.io/codescale/**
-仓库：`CursedRoaming/codescale`（公开），Pages 走 `main` 分支根目录，`legacy` 构建。
+对外主地址：**https://codescale.pages.dev/**（Cloudflare Pages，不含个人 ID，只发这条）
+旧地址：`https://cursedroaming.github.io/codescale/`（GitHub Pages，仍可访问，但含个人 ID，不对外发）
 
-已完成的三步，留档备查：
+三条实测（2026-11-21 11:50，均 HTTP 200）：
+- 主页 `https://codescale.pages.dev/`
+- 数据需求 `https://codescale.pages.dev/data-needs`（Pages 自动去 `.html`）
+- 日报 `https://codescale.pages.dev/reports/2026-11-20`
+
+仓库：`CursedRoaming/codescale`，分支 `main`。Cloudflare Pages 走 Git 集成，
+连 `CursedRoaming/codescale` 的 `main`，Project name `codescale`，
+Framework preset `None`，Build command 留空，Build output directory `/`。
+`.github/workflows/daily.yml` 每天 push 会自动触发 Cloudflare 重新部署，不用另配。
+
+GitHub Pages 那套留档备查，现已不是主部署：
 
 1. 建仓库 `codescale`，推 `main`
 2. Settings → Pages → Source: `Deploy from a branch`，`main` / 根目录
-3. `.nojekyll` 已在仓库里（不加它，下划线开头的路径会被 Jekyll 吞掉）
+3. `.nojekyll` 已在仓库里（Cloudflare 下不受影响）
 
 **没有配置任何 Secret。** 因为 Kalodata 没有 API，管线不向任何外部服务认证，
 只读仓库里 `pipeline/inbox/` 的 CSV。早前那版写的 `KOLADATA_KEY` 已删掉，别再建。
