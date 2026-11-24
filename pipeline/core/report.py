@@ -33,6 +33,7 @@ h1{font-size:26px;letter-spacing:-.5px;margin:8px 0 6px}
 h2{font-size:16.5px;margin:34px 0 4px;padding-bottom:8px;border-bottom:1px solid #eaecf0}
 .lead{font-size:13px;color:#5a606e;margin:9px 0 14px}
 table{width:100%;border-collapse:collapse;font-size:13px}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 th,td{padding:8px 8px;border-bottom:1px solid #f0f1f4;text-align:right;font-variant-numeric:tabular-nums}
 th:first-child,td:first-child{text-align:left}
 th{color:#767c8a;font-weight:500;font-size:11.5px}
@@ -55,7 +56,7 @@ tr.hi td{background:#fff9f0}
 .alert p{font-size:12.5px;color:#6b5a44;line-height:1.7}
 .alert b{color:#8a5200}
 @media print{body{background:#fff;padding:0}.wrap{box-shadow:none;padding:0;max-width:none}}
-@media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}.wrap{padding:26px 20px}}
+@media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}.wrap{padding:26px 20px}.src{grid-template-columns:1fr;gap:2px}}
 """
 
 
@@ -92,40 +93,38 @@ STATUS_CN = {'ok': '已接入', 'empty': '无新数据', 'not_configured': '待�
 
 
 def _banner(p):
-    """只在「这份报告其实没有新东西」时才出现。
+    """仅在本次运行无新增内容时显示。
 
-    每天自动跑一次，源没接通时每次跑出来的数完全一样。若不承认这件事，
-    就会每天发一份内容相同的「新一期」给客户，那比不发更糟。
-    所以这里把没有变化这件事做成页面最上面的一块，不藏在脚注里。
+    定时任务每日执行。数据源未接通时，各次运行结果相同。
+    该状态需在报告顶部标明，不以相同内容充当新一期。
     """
     d = p.get('delta') or {}
     lag = p['meta'].get('freshness_days')
     stale = lag is not None and lag >= 3
 
     if not d.get('has_prev'):
-        head = '这是第一份快照，没有上一版可比'
-        body = ('从今天起每天落一份不可变快照。明天的这一页会显示条数、商品和价格的变动。')
+        head = '首份快照，无上一版本可供比较'
+        body = ('自本报告起，每日生成一份不可变快照。后续版本将显示样本数、商品与价格的变动。')
     elif d.get('changed') is False:
-        head = '本版没有新数据'
-        body = ('本次运行没有取到任何新记录：条数、商品、价格与 %s 那版逐项相同。'
-                '这不是新一期行情，是同一批数据的再次统计。'
+        head = '本版无新增数据'
+        body = ('本次运行未获取到新记录：样本数、商品与价格与 %s 版本逐项一致。'
+                '当前内容为既有数据的重新统计。'
                 % (d.get('prev_date') or '上一'))
     else:
-        # 有变化就不需要这块了，变化本身写在第五节
+        # 有变化时不显示此块，变动本身记录在第七节
         return ''
 
     if stale:
-        body += ('<br>数据观测日仍是 <b>%s</b>，距今 <b>%d 天</b>。'
-                 '要换一批数，只能从数据源进来：Kalodata 导出的 CSV 放进 '
-                 '<code>pipeline/inbox/</code>，或接通任一平台源。'
+        body += ('<br>数据观测日仍为 <b>%s</b>，距今 <b>%d 天</b>。'
+                 '数据更新需通过数据源接入：将 Kalodata 导出的 CSV 放入 '
+                 '<code>pipeline/inbox/</code>，或接通任一平台数据源。'
                  % (p['meta'].get('data_date') or '--', lag))
 
     return '<div class="alert"><div class="t">%s</div><p>%s</p></div>' % (head, body)
 
 
 def _scale_lead(sc):
-    """规模刻度那一节的开场句。用最低价档和「单件净利最接近十元」那档做对比，
-    因为这两档的差距最能说明「贴着保本线定价」有多不划算。"""
+    """规模刻度一节开场句。取最低价档与单件净利最接近十元的一档做对比。"""
     grid, targets = sc.get('grid') or [], sc.get('targets') or []
     if len(grid) < 2 or not targets:
         return ''
@@ -137,9 +136,9 @@ def _scale_lead(sc):
 
     if not u_lo or not u_mid:
         return ''
-    return ('贴着保本线定价（%s）时单件只赚 %s，要卖 <b>%s 单</b>才够 R$%s 的月净利。'
-            '把价抬到 %s，单件 %s，<b>%s 单</b>就够。'
-            % (_brl(lo['price']), _signed(lo['unit_org']), _num(u_lo), _num(t['target']),
+    return ('按 %s 定价时，单件净利为 %s，达到 R$%s 的月净利需 <b>%s 单</b>。'
+            '定价提高至 %s 后，单件净利 %s，所需单量为 <b>%s 单</b>。'
+            % (_brl(lo['price']), _signed(lo['unit_org']), _num(t['target']), _num(u_lo),
                _brl(mid['price']), _signed(mid['unit_org']), _num(u_mid)))
 
 
@@ -148,18 +147,18 @@ def _conclusions(p):
     c = p['cost']
     out = []
     if p['comparable_n'] == 0:
-        out.append('今天的样本里，<b>没有一条</b>是 10 片手工甲，自家产品当前<b>没有可比价格</b>。'
-                   '下面的市场价只能当行情看，不能当定价依据。')
+        out.append('本期样本中<b>无</b> 10 片手工甲记录，对标产品当前<b>无可比价格</b>。'
+                   '以下市场价仅作行情参考，不作为定价依据。')
     else:
         comp = p['comparable']
         net = round(comp['median'] * (1 - c['r_org']) - c['fixed'], 2)
         out.append('10 片手工甲／手工款样本 <b>%d 条</b>，中位 %s（%s–%s）。'
-                   '按这个价位卖，不投流%s。'
+                   '按该价位销售，不投流%s。'
                    % (comp['n'], _brl(comp['median']), _brl(comp['p25']), _brl(comp['p75']),
-                      ('净利 %s' % _signed(net)) if net >= 0 else ('每副亏 %s' % _brl(abs(net)))))
+                      ('净利 %s' % _signed(net)) if net >= 0 else ('每副亏损 %s' % _brl(abs(net)))))
         if comp['n'] < 5:
-            out.append('但这组只有 %d 条，且部分同价，<b>只能当价格上限看</b>，不足以定价。'
-                       '要定价，样本得先补到 20 条以上。' % comp['n'])
+            out.append('该组样本仅 %d 条且部分同价，<b>仅可作为价格上限参考</b>，不足以支撑定价。'
+                       '样本需补充至 20 条以上后再进行定价分析。' % comp['n'])
     out.append('到仓成本 %s，不投流保本 <b>%s</b>，投流保本 <b>%s</b>。'
                '全样本 %d 条报价里，%s 条（%s）站在不投流保本线以上，%s 条（%s）站在投流保本线以上。'
                % (_brl(c['fixed']), _brl(c['be_org']), _brl(c['be_full']),
@@ -168,15 +167,15 @@ def _conclusions(p):
     ok = [s for s in p['sources'] if s['status'] == 'ok']
     u = p.get('urls') or {}
     if not u.get('is_item_level'):
-        link = ('%d 条记录只对应 <b>%d 个链接</b>，其中指向具体商品的只有 %d 个，'
-                '其余是搜索列表页和店铺首页。数据里只有 <b>%d 条</b>（%s）点进去能看到那个商品，'
-                '剩下的都找不到这条价格的原处。'
+        link = ('%d 条记录对应 <b>%d 个链接</b>，其中指向具体商品的为 %d 个，'
+                '其余为搜索列表页和店铺首页。其中 <b>%d 条</b>（%s）可回溯至对应商品页面，'
+                '其余记录无法核对价格来源。'
                 % (u.get('total', 0), u.get('unique', 0), u.get('item_links', 0),
                    u.get('item_records', 0), _pct(u.get('item_ratio'))))
     elif p['snapshot_rate'] < 0.99:
-        link = '链接指向单品，但<b>没有存页面快照</b>，客户追问时拿不出当时的截图。'
+        link = '链接指向单品，但<b>未保存页面快照</b>，无法提供采集时的截图佐证。'
     else:
-        link = '每条都能回溯到当时页面。'
+        link = '每条记录均可回溯至采集时页面。'
     out.append('数据侧：%d 路源里 %d 路有数，快照留存率 %s。%s'
                % (p['sources_total'], len(ok), _pct(p['snapshot_rate'], 0), link))
     return out
@@ -185,7 +184,7 @@ def _conclusions(p):
 def render_html(p):
     c = p['cost']
     kpi = [
-        ('今日样本', '%d 条' % p['n'], '去重后 · 原始 %d' % p['n_raw'], ''),
+        ('本期样本', '%d 条' % p['n'], '去重后 · 原始 %d' % p['n_raw'], ''),
         ('全样本中位价', _brl(p['median']), '跨品类混合，不作定价依据', 'warn'),
         ('不投流保本价', _brl(c['be_org']), '投流需 %s' % _brl(c['be_full']), 'bad'),
         ('可比样本', '%d 条' % p['comparable_n'], '10 片或手工款', 'bad' if p['comparable_n'] == 0 else 'ok'),
@@ -244,8 +243,8 @@ def render_html(p):
                ''.join('<td class="%s">%s</td>'
                        % ('neg' if c < 0 else 'pos', _num(c)) for c in g['cells']))
             for g in sc['grid'])
-        rows_sc = ('<table><thead><tr><th>售价</th><th>单件净利</th>%s</tr></thead>'
-                   '<tbody>%s</tbody></table>' % (head_v, rows_sc))
+        rows_sc = ('<div class="tscroll"><table><thead><tr><th>售价</th><th>单件净利</th>%s</tr></thead>'
+                   '<tbody>%s</tbody></table></div>' % (head_v, rows_sc))
 
         th_t = ''.join('<th>月利 %s</th>' % _num(t['target']) for t in sc['targets'])
         body = ''
@@ -254,7 +253,7 @@ def render_html(p):
             for t in sc['targets']:
                 b = t['by_price'][i]
                 cells += ('<td>%s</td>' % (_num(b['units']) + ' 单')) if b['units'] \
-                    else '<td style="color:#c62828">到不了</td>'
+                    else '<td style="color:#c62828">无法达到</td>'
             body += '<tr><td>%s</td><td>%s</td>%s</tr>' % (_brl(g['price']), _signed(g['unit_org']), cells)
         rows_need = ('<table><thead><tr><th>售价</th><th>单件净利</th>%s</tr></thead>'
                      '<tbody>%s</tbody></table>' % (th_t, body))
@@ -295,9 +294,9 @@ def render_html(p):
                      '<th>摆幅</th><th>%s 时单件净利</th></tr></thead><tbody>%s</tbody></table>'
                      % (int(round(se['step'] * 100)), _brl(se['anchor']), body))
         top = se['rows'][0]
-        sens_lead = ('单看摆幅，最大的一项是 <b>%s</b>，动 %d%% 就让每副的保本线挪 %s。'
-                     '但摆幅最大不等于最该动：汇率是被动风险，砍不动；'
-                     '采购价是唯一既动得大又谈得下来的。想降价，先谈采购，再谈头程，最后才是费率。'
+        sens_lead = ('按摆幅排序，影响最大的一项为 <b>%s</b>，变动 %d%% 时保本价移动 %s。'
+                     '摆幅用于确定关注优先级：汇率属于外部因素，不可直接调整；'
+                     '采购价属于可协商项。成本管控的优先顺序为采购价、头程运费、费率。'
                      % (top['label'], int(round(se['step'] * 100)), _brl(top['swing'])))
 
     # 七、异动
@@ -311,7 +310,7 @@ def render_html(p):
                        for m in p['movers'])
                    + '</tbody></table>')
     else:
-        rows_mv = '<div class="lead" style="margin:0">本次运行没有可比的上一版数据，价格变动从明天起可见。</div>'
+        rows_mv = '<div class="lead" style="margin:0">本次运行无上一版本可供比较，价格变动将在后续版本中显示。</div>'
 
     # 六、源
     srcs = ''.join(
@@ -332,14 +331,14 @@ def render_html(p):
 <div class="kpis">%(kpis)s</div>
 
 <h2>一、成本与保本价</h2>
-<div class="lead">自家产品的成本，与市场价无关。所有保本判断都从这里出发。</div>
+<div class="lead">对标产品的成本结构独立于市场价格。所有保本判断以此为基础。</div>
 <div class="bars">%(parts)s</div>
 <div class="lead" style="margin-top:16px">到仓成本 %(fixed)s ＝ 采购 ＋ 头程 ＋ 仓储。费率如下（占售价）：</div>
 <table style="max-width:440px"><thead><tr><th>费率项</th><th>比例</th></tr></thead><tbody>%(rates)s</tbody></table>
 <div class="lead">不投流口径只含平台佣金、税、SFP 包邮，合计 %(r_org)s；投流口径再加广告与达人，合计 %(r_full)s。</div>
 
 <h2>二、价格带分布</h2>
-<div class="lead">%(n)d 条报价按价格分档。深色档位整体站在不投流保本线 %(be_org)s 以上。</div>
+<div class="lead">%(n)d 条报价按价格分档。深色档位均高于不投流保本价 %(be_org)s。</div>
 <div class="bars">%(bars)s</div>
 
 <h2>三、规格与分层</h2>
@@ -351,7 +350,7 @@ def render_html(p):
 <tbody>%(rows_tier)s</tbody></table>
 
 <h2>四、单副盈亏</h2>
-<div class="lead">到仓成本 %(fixed)s／副固定。蓝色行是保本点。</div>
+<div class="lead">到仓成本 %(fixed)s／副固定。蓝色行为保本价对应行。</div>
 <table><thead><tr><th>售价</th><th>到仓成本</th><th>投流净利</th><th>不投流净利</th></tr></thead>
 <tbody>%(rows_e)s</tbody></table>
 
@@ -359,32 +358,32 @@ def render_html(p):
 <div class="lead">%(scale_lead)s</div>
 <div class="lead" style="margin-top:2px">月净利 =（售价 ×（1 − 费率）− 到仓成本）× 月单量。下面是<b>不投流</b>口径，费率 %(r_org)s。</div>
 %(rows_sc)s
-<div class="lead" style="margin-top:18px">反过来看：要拿到目标月净利，各个价位分别需要多少单。</div>
+<div class="lead" style="margin-top:18px">反向计算：达到目标月净利所需单量，按价位列示。</div>
 %(rows_need)s
 <div class="lead" style="margin-top:12px;color:#8a5200">
-<b>这是刻度，不是预测。</b>单量是假设出来的横轴，不含退货、滞销、平台活动亏损与汇率波动。
-它回答「卖到这个量，账上是什么样」，不回答「能不能卖到这个量」。</div>
+<b>刻度说明</b>　单量为假设的横轴变量，不含退货、滞销、平台活动亏损与汇率波动。
+本表回答「达到该销量时账目结果如何」，不回答「能否达到该销量」。</div>
 
 <h2>六、成本敏感性</h2>
 <div class="lead">%(sens_lead)s</div>
 %(rows_sens)s
 <div class="lead" style="margin-top:12px;color:#8a5200">
-<b>摆幅不能相加。</b>汇率与采购是同一笔钱的两个视角，两项同时动不等于两数相加。
-这是排优先级用的尺子，不是预测。</div>
+<b>摆幅不可相加。</b>汇率与采购成本构成同一笔支出的两个视角，两项同时变动不等于两者相加。
+本表用于确定关注顺序，不构成预测。</div>
 
 <h2>七、价格异动</h2>
 <div class="lead">与上一版快照比较，变动绝对值 ≥ R$0.50 的记录。</div>
 %(rows_mv)s
 
 <h2>八、数据可靠性</h2>
-<div class="lead">每路源的真实状态。状态是事实，不是故障报告。</div>
+<div class="lead">各数据源的真实状态，按实际情况标注。</div>
 %(srcs)s
 <div class="foot">
 <b>口径</b>：%(status)s。全部金额为巴西雷亚尔，参考汇率 R$1 ≈ ¥%(fx)s。<br>
 <b>不能得出的结论</b>：全市场销量排名、哪个价格带成交最多、哪类款式在爆发、评论比例代表整体偏好。
 这几项需要连续多日样本与成交数据，当前样本不支持。<br>
-<b>可比性</b>：自家产品为 10 片手工甲，市场样本以 24 片机器甲为主，两者不可直接相减。
-本报告不给出「自家产品应当定价多少」的结论，只给成本线与行情分布。<br>
+<b>可比性</b>：对标产品为 10 片手工甲，市场样本以 24 片机器甲为主，两者不可直接相减。
+本报告不提供定价结论，仅提供成本线与行情分布。<br>
 <b>生成</b>：%(run_at)s · 管线自动生成，未经人工改写
 </div>
 </div></body></html>""" % {
@@ -410,7 +409,7 @@ def render_md(p):
     d = p.get('delta') or {}
     L = ['**码尺日报 · 穿戴甲巴西站 · %s**' % p['meta']['run_date'], '']
     if d.get('has_prev') and d.get('changed') is False:
-        L.append('> 本次无新数据：与 %s 那版逐项相同，数据观测日仍是 %s。不是新一期行情。'
+        L.append('> 本版无新增数据：与 %s 版本逐项一致，数据观测日仍为 %s。当前内容为既有数据的重新统计。'
                  % (d.get('prev_date') or '上一', p['meta'].get('data_date') or '--'))
         L.append('')
     L.append('样本 %d 条（去重后），观测日 %s。' % (p['n'], '、'.join(p['observed_dates']) or '--'))
@@ -419,13 +418,13 @@ def render_md(p):
     se = p.get('sensitivity') or {}
     if se.get('rows'):
         top = se['rows'][0]
-        L.append('成本里最敏感的是%s：单独动 %d%%，保本线挪 %s。'
+        L.append('成本敏感度最高项为%s：单独变动 %d%%，保本价移动 %s。'
                  % (top['label'], int(round(se['step'] * 100)), _brl(top['swing'])))
     if p['comparable_n'] == 0:
-        L.append('10 片手工甲的可比样本 0 条，今天不给定价结论。')
+        L.append('10 片手工甲可比样本 0 条，本版不提供定价结论。')
     else:
         L.append('10 片手工甲可比样本 %d 条，中位 %s。' % (p['comparable_n'], _brl(p['comparable']['median'])))
-    L.append('市场报价里 %s 站在不投流保本线以上（%d/%d）。' % (_pct(p['over_be_ratio']), p['over_be'], p['n']))
+    L.append('市场报价中 %s 高于不投流保本价（%d/%d）。' % (_pct(p['over_be_ratio']), p['over_be'], p['n']))
     ok = [s for s in p['sources'] if s['status'] == 'ok']
     L.append('数据源 %d/%d 有数，快照留存 %s。' % (len(ok), p['sources_total'], _pct(p['snapshot_rate'])))
     L.append('')
