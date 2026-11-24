@@ -78,7 +78,9 @@ index.html  home.js                  首页：平台功能与模块入口
 app.html  workbench.js               工作台：登录、当日更新、近窗、外推、自有模型（需本地服务）
 board.html  app.js                   看板：行情 → 规格 → 盈亏 → 规模 → 敏感 → 对标 → 数据源 → 归档
 report.html  report.js               分析报告：按章节查看当期结论与明细表，按期下载 Word
-shell.js  theme.css                  全站左侧导航与样式。无依赖、无构建、无框架
+shell.js  theme.css  theme.js         全站左侧导航、三套主题与样式。无依赖、无构建、无框架
+  主题：左侧栏底部「深 / 浅 / 暖」三个按钮，选择存浏览器 localStorage，
+       刷新保持。所有颜色走 CSS 变量，图表线条随之重绘，无硬编码残留。
 data-needs.html                      数据需求清单（临时入口，字段补齐后移除）
 connect.html                         接入中心：授权说明 + 8 个渠道的条件与步骤 + 本机台账
                                      （localStorage，可导出 JSON）。台账只存本机，不上传；不收密钥

@@ -6,6 +6,14 @@ const $ = (id) => document.getElementById(id);
 const BRL = (v) => (v == null ? '--' : 'R$ ' + Number(v).toFixed(2));
 const PCT = (v, d = 0) => (v == null ? '--' : (v * 100).toFixed(d) + '%');
 const NUM = (v) => (v == null ? '--' : Number(v).toLocaleString('pt-BR'));
+/* 颜色从主题变量读，切换主题时图表随之变化。 */
+const CV = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const C_ACC = () => CV('--acc');
+const C_ACC2 = () => CV('--acc2');
+const C_UP = () => CV('--up');
+const C_DOWN = () => CV('--down');
+const C_DIM = () => CV('--dim');
+const C_DIM2 = () => CV('--dim2');
 
 const STATUS = {
   ok: ['已接入', 'ok', 's-ok'],
@@ -160,7 +168,7 @@ function econ(d) {
     fill="none" stroke="${col}" stroke-width="2.2" ${dash ? 'stroke-dasharray="5 4"' : ''}/>`;
   // 零轴以下区域使用浅色底纹，与盈利区区分
   const lossBand = `<rect x="${L}" y="${Y(0)}" width="${W - L - R}" height="${Y(ymin) - Y(0)}"
-    fill="rgba(255,90,110,.05)"/>`;
+    fill="rgba(var(--up-rgb),.05)"/>`;
 
   const mark = (p, col, label) => {
     const v = net(p, c.r_org);
@@ -173,15 +181,15 @@ function econ(d) {
     <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="售价与净利的关系">
       ${grid}${lossBand}
       <line class="zero" x1="${L}" y1="${Y(0)}" x2="${W - R}" y2="${Y(0)}"/>
-      ${line(c.r_full, '#7c5cff', true)}${line(c.r_org, '#22d3ee', false)}
-      ${mark(c.be_org, '#22d3ee', '不投流保本')}${mark(c.be_full, '#7c5cff', '投流保本')}
+      ${line(c.r_full, C_ACC(), true)}${line(c.r_org, C_ACC2(), false)}
+      ${mark(c.be_org, C_ACC2(), '不投流保本')}${mark(c.be_full, C_ACC(), '投流保本')}
       ${yt}${xt}
       <text class="lbl" x="${W - R}" y="${Y(0) - 7}" text-anchor="end">零轴</text>
     </svg>
     <div class="legend">
-      <span><i style="background:#22d3ee"></i>不投流（平台+税+SFP ${PCT(c.r_org, 1)}）</span>
-      <span><i style="background:#7c5cff"></i>投流（含广告+达人 ${PCT(c.r_full, 1)}）</span>
-      <span style="color:#5f6478">横轴：售价 BRL　纵轴：单副净利 BRL</span>
+      <span><i style="background:var(--acc2)"></i>不投流（平台+税+SFP ${PCT(c.r_org, 1)}）</span>
+      <span><i style="background:var(--acc)"></i>投流（含广告+达人 ${PCT(c.r_full, 1)}）</span>
+      <span style="color:var(--dim2)">横轴：售价 BRL　纵轴：单副净利 BRL</span>
     </div>`;
 
   const rows = (d.econ || []).map((e) => {
@@ -242,9 +250,9 @@ function scale(d) {
   $('scale-grid').innerHTML = `
     <table><thead><tr><th>售价</th><th>单件净利</th>${head}</tr></thead><tbody>${rows}</tbody></table>
     <div class="legend" style="margin-top:10px">
-      <span><i style="background:#2bd98a"></i>绿色：该档位单件盈利</span>
-      <span><i style="background:#ff5a6e"></i>红色：该档位单件亏损</span>
-      <span style="color:#5f6478">月净利 =（售价 ×（1 − 费率）− 到仓成本）× 月单量</span>
+      <span><i style="background:var(--down)"></i>绿色：该档位单件盈利</span>
+      <span><i style="background:var(--up)"></i>红色：该档位单件亏损</span>
+      <span style="color:var(--dim2)">月净利 =（售价 ×（1 − 费率）− 到仓成本）× 月单量</span>
     </div>`;
 
   // 反向：目标月利 → 需要多少单
@@ -254,7 +262,7 @@ function scale(d) {
       const b = x.by_price[i];
       return b.units
         ? `<td>${NUMK(b.units)} 单</td>`
-        : `<td style="color:#ff5a6e">无法达到</td>`;
+        : `<td style="color:var(--up)">无法达到</td>`;
     }).join('');
     return `<tr><td>${BRL(g.price)}</td><td>${SGN(g.unit_org)}</td>${cells}</tr>`;
   }).join('');
@@ -300,7 +308,7 @@ function sens(d) {
     const nHi = full ? r.net_full_high : r.net_high;
     return `<tr>
       <td>${r.label}${full ? ' <span class="tag off">投流口径</span>' : ''}</td>
-      <td style="color:#8b91a8">${pair(r.low, r.high, r.fmt)}</td>
+      <td style="color:var(--dim)">${pair(r.low, r.high, r.fmt)}</td>
       <td>${pair(beLo, beHi, 'brl')}</td>
       <td><b>${r.swing.toFixed(2)}</b></td>
       <td class="${(nLo < 0 || nHi < 0) ? 'neg' : 'pos'}">${pairSigned(nLo, nHi)}</td>
@@ -321,7 +329,7 @@ function sens(d) {
       <th>${BRL(s.anchor)} 时单件净利</th>
     </tr></thead><tbody>${rows}</tbody></table>
     <div class="legend" style="margin-top:10px">
-      <span style="color:#5f6478">摆幅：该变量单独变动 ${step}% 时保本价的变化额，其余变量保持不变</span>
+      <span style="color:var(--dim2)">摆幅：该变量单独变动 ${step}% 时保本价的变化额，其余变量保持不变</span>
     </div>
     <div class="warnbar" style="margin-top:14px"><span>
       <b>摆幅不可相加</b>　汇率与采购成本构成同一笔支出的两个视角，两项同时变动不等于两者相加。
@@ -343,7 +351,7 @@ function comp(d) {
   const s = d.comparable;
   const net = s.median * (1 - c.r_org) - c.fixed;
   const items = (d.comparable_items || []).map((x) => `
-    <tr><td>${x.title}</td><td>${BRL(x.price)}</td><td style="color:#8b91a8">${PLATFORM[x.platform] || x.platform}</td></tr>`).join('');
+    <tr><td>${x.title}</td><td>${BRL(x.price)}</td><td style="color:var(--dim)">${PLATFORM[x.platform] || x.platform}</td></tr>`).join('');
   $('comp').innerHTML = `
     <div class="kpis" style="margin:0 0 16px">
       <div class="kpi"><div class="lab">样本</div><div class="val">${s.n}</div><div class="note">手工或定制款</div></div>
@@ -366,7 +374,7 @@ function srcs(d) {
     return `<div class="src">
       <div><span class="dot ${dot}"></span>${s.name}</div>
       <div><span class="tag ${cls}">${cn}</span></div>
-      <div style="color:#8b91a8">${s.records} 条</div>
+      <div style="color:var(--dim)">${s.records} 条</div>
       <div class="why">${s.reason || ''}</div>
     </div>`;
   }).join('');
@@ -414,6 +422,15 @@ function foot(d) {
     <b>码尺 CodeScale</b>　${m.tagline} · 每日 ${(m.schedule && m.schedule.cron) || '20:00'} 自动更新`;
 }
 
+let CS_STATE = null;
+function paint(got) {
+  const { data, runs: list } = got;
+  head(data); notice(data); kpis(data); verdict(data); bands(data); specs(data);
+  econ(data); scale(data); sens(data); comp(data); srcs(data); runs(data, list); foot(data);
+}
+// 主题切换后重绘图表，让 SVG 线条随 CSS 变量换色
+window.CSRedraw = function () { if (CS_STATE) paint(CS_STATE); };
+
 (async function () {
   const got = await load();
   if (!got) {
@@ -421,7 +438,6 @@ function foot(d) {
     $('stamp').innerHTML = '<span>无数据</span>';
     return;
   }
-  const { data, runs: list } = got;
-  head(data); notice(data); kpis(data); verdict(data); bands(data); specs(data);
-  econ(data); scale(data); sens(data); comp(data); srcs(data); runs(data, list); foot(data);
+  CS_STATE = got;
+  paint(got);
 })();

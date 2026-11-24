@@ -14,10 +14,12 @@
     ['security', '安全说明', 'security.html', ''],
     ['needs', '数据需求', 'data-needs.html', '<span class="tmp">临时</span>']
   ];
+  var cs = getComputedStyle(document.documentElement);
+  var cv = function (n) { return cs.getPropertyValue(n).trim(); };
   var logo = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none">' +
-    '<rect x="1.5" y="1.5" width="21" height="21" rx="6" stroke="#7c5cff" stroke-width="1.5"/>' +
-    '<path d="M7 16.5V7.5h6.4L17 11.1v5.4z" stroke="#e9ebf2" stroke-width="1.4" stroke-linejoin="round"/>' +
-    '<path d="M9.6 11.2h2.2M9.6 13.6h4.2" stroke="#7c5cff" stroke-width="1.3" stroke-linecap="round"/>' +
+    '<rect x="1.5" y="1.5" width="21" height="21" rx="6" stroke="' + cv('--acc') + '" stroke-width="1.5"/>' +
+    '<path d="M7 16.5V7.5h6.4L17 11.1v5.4z" stroke="' + cv('--ink') + '" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="M9.6 11.2h2.2M9.6 13.6h4.2" stroke="' + cv('--acc') + '" stroke-width="1.3" stroke-linecap="round"/>' +
     '</svg>';
   var h = '<aside class="side"><div class="brand"><div class="bt">' + logo +
     '<div class="bn">码尺<em>CODESCALE</em></div></div>' +

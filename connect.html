@@ -7,12 +7,13 @@
 <meta name="description" content="可选数据渠道及其接入条件、操作步骤与成本。下方台账可自由填写，内容仅保存在本机浏览器。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
 <link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 <style>
   .localbar{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:13px 16px;
-    border:1px solid rgba(34,211,238,.28);background:rgba(34,211,238,.06);border-radius:10px;
-    font-size:12.5px;color:#bfe9f2}
+    border:1px solid rgba(var(--cyan-rgb),.28);background:rgba(var(--cyan-rgb),.06);border-radius:10px;
+    font-size:12.5px;color:var(--acc2)}
   .localbar b{color:var(--acc2)}
-  .localbar.warn{border-color:rgba(240,166,0,.3);background:rgba(240,166,0,.07);color:#e8cf9a;margin-top:8px}
+  .localbar.warn{border-color:var(--warnbar-border);background:var(--warnbar-bg);color:var(--warnbar-ink);margin-top:8px}
   .localbar.warn b{color:var(--warn)}
 
   .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -24,12 +25,12 @@
   .ch .what{font-size:12px;color:var(--dim);line-height:1.65;min-height:40px}
   .ch .facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
   .pill{font-size:10.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--line);color:var(--dim)}
-  .pill.g{color:var(--down);border-color:rgba(43,217,138,.3);background:rgba(43,217,138,.07)}
-  .pill.r{color:var(--up);border-color:rgba(255,90,110,.3);background:rgba(255,90,110,.07)}
-  .pill.y{color:var(--warn);border-color:rgba(240,166,0,.3);background:rgba(240,166,0,.07)}
+  .pill.g{color:var(--down);border-color:var(--tag-ok-line);background:var(--tag-ok-bg)}
+  .pill.r{color:var(--up);border-color:var(--tag-bad-line);background:var(--tag-bad-bg)}
+  .pill.y{color:var(--warn);border-color:var(--warn-line);background:var(--warnbar-bg)}
 
   details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:9px}
-  details[open]{border-color:rgba(124,92,255,.4)}
+  details[open]{border-color:rgba(var(--acc-rgb),.4)}
   summary{cursor:pointer;padding:13px 16px;font-size:13px;font-weight:600;list-style:none;
     display:flex;align-items:center;gap:10px;user-select:none}
   summary::-webkit-details-marker{display:none}
@@ -42,9 +43,9 @@
   .detail ol{margin:8px 0 0 18px}
   .detail li{font-size:12.5px;color:var(--dim);line-height:1.8;padding-left:2px}
   .detail .caution{margin-top:10px;padding:10px 12px;border-left:2px solid var(--warn);
-    background:rgba(240,166,0,.06);border-radius:0 7px 7px 0;font-size:12px;color:#e8cf9a}
+    background:var(--warnbar-bg);border-radius:0 7px 7px 0;font-size:12px;color:var(--warnbar-ink)}
   code{font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
-    background:#0e1018;border:1px solid var(--line);border-radius:5px;
+    background:var(--track);border:1px solid var(--line);border-radius:5px;
     padding:1px 6px;color:var(--acc2);white-space:nowrap}
   ul.clean{list-style:none;margin:0;padding:0}
   ul.clean li{font-size:12.5px;color:var(--dim);padding:7px 0 7px 20px;position:relative;line-height:1.7}
@@ -56,29 +57,29 @@
     align-items:start;margin-bottom:8px}
   .ledger .hd{font-size:10.5px;color:var(--dim2);letter-spacing:.4px;padding:0 2px 4px}
   .ledger input,.ledger select,.ledger textarea{
-    width:100%;background:#0e1018;border:1px solid var(--line);border-radius:7px;
+    width:100%;background:var(--track);border:1px solid var(--line);border-radius:7px;
     color:var(--ink);font:12px/1.5 inherit;padding:8px 9px;outline:none;min-width:0}
   .ledger input:focus,.ledger select:focus,.ledger textarea:focus{border-color:var(--acc)}
   .ledger textarea{resize:vertical;min-height:36px}
   .ledger select{cursor:pointer}
   .ledger button.del{width:34px;height:34px;border-radius:7px;border:1px solid var(--line);
     background:var(--panel2);color:var(--dim);cursor:pointer;font-size:15px}
-  .ledger button.del:hover{color:var(--up);border-color:rgba(255,90,110,.4)}
+  .ledger button.del:hover{color:var(--up);border-color:var(--tag-bad-line)}
   .sens{display:none;grid-column:1/-1;font-size:11.5px;color:var(--warn);
-    background:rgba(240,166,0,.07);border:1px solid rgba(240,166,0,.28);
+    background:var(--warnbar-bg);border:1px solid var(--warnbar-border);
     border-radius:7px;padding:7px 10px;margin-top:-2px}
   .sens.show{display:block}
-  .rowbox{border-bottom:1px solid #1b1f2b;padding:10px 0 12px}
+  .rowbox{border-bottom:1px solid var(--line2);padding:10px 0 12px}
   .rowbox:last-of-type{border-bottom:0}
   .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
   .btn{border:1px solid var(--line);background:var(--panel2);color:var(--ink);
     border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer}
   .btn:hover{border-color:var(--acc)}
-  .btn.main{background:rgba(124,92,255,.16);border-color:rgba(124,92,255,.45)}
-  .btn.danger:hover{border-color:rgba(255,90,110,.4);color:var(--up)}
+  .btn.main{background:rgba(var(--acc-rgb),.16);border-color:rgba(var(--acc-rgb),.45)}
+  .btn.danger:hover{border-color:var(--tag-bad-line);color:var(--up)}
   .stats{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);margin-bottom:14px}
   .stats b{color:var(--acc2);font-variant-numeric:tabular-nums}
-  #notes{width:100%;min-height:96px;background:#0e1018;border:1px solid var(--line);
+  #notes{width:100%;min-height:96px;background:var(--track);border:1px solid var(--line);
     border-radius:8px;color:var(--ink);font:12.5px/1.7 inherit;padding:11px 12px;
     outline:none;resize:vertical}
   #notes:focus{border-color:var(--acc)}

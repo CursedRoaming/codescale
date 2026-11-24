@@ -7,19 +7,20 @@
 <meta name="description" content="凭证保存位置、权限边界、页面请求行为与运维交接约定。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
 <link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
 <style>
   .noform{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:13px 16px;
-    border:1px solid rgba(43,217,138,.3);background:rgba(43,217,138,.06);border-radius:10px;
-    font-size:12.5px;color:#b9e7d0}
+    border:1px solid var(--tag-ok-line);background:var(--tag-ok-bg);border-radius:10px;
+    font-size:12.5px;color:var(--down)}
   .noform b{color:var(--down)}
   code{font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
-    background:#0e1018;border:1px solid var(--line);border-radius:5px;
+    background:var(--track);border:1px solid var(--line);border-radius:5px;
     padding:1px 6px;color:var(--acc2);white-space:nowrap}
-  pre{margin:10px 0 0;background:#0e1018;border:1px solid var(--line);border-radius:8px;
+  pre{margin:10px 0 0;background:var(--track);border:1px solid var(--line);border-radius:8px;
     padding:12px 14px;overflow-x:auto}
-  pre code{background:none;border:0;padding:0;color:#cfd3e0;white-space:pre;display:block}
-  .badge{font-size:10px;letter-spacing:1px;color:var(--warn);border:1px solid rgba(240,166,0,.32);
-    background:rgba(240,166,0,.08);border-radius:5px;padding:2px 7px;font-weight:600}
+  pre code{background:none;border:0;padding:0;color:var(--verdict-ink);white-space:pre;display:block}
+  .badge{font-size:10px;letter-spacing:1px;color:var(--warn);border:1px solid var(--warn-line);
+    background:var(--warnbar-bg);border-radius:5px;padding:2px 7px;font-weight:600}
   .kv td:first-child{width:210px;color:var(--ink);font-weight:600}
   ul.clean{list-style:none;margin:0;padding:0}
   ul.clean li{font-size:12.5px;color:var(--dim);padding:7px 0 7px 20px;position:relative;line-height:1.7}
