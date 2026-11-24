@@ -31,7 +31,7 @@ python pipeline/run.py --dry        # 只打印不落盘
 改过 CSV 导入器之后跑一遍测试：
 
 ```bash
-python -m unittest discover -s pipeline/tests -v     # 34 个用例
+python -m unittest discover -s pipeline/tests -v     # 41 个用例
 ```
 
 测四块：巴西数字格式与三套表头、单品链接判定、变化检测的阈值边界、规模刻度的算术。
@@ -42,6 +42,18 @@ python -m unittest discover -s pipeline/tests -v     # 34 个用例
 
 - 直接双击 `index.html`（首页）或 `board.html`（看板）；`data/latest.js` 是镜像，专门给这种情况兜底
 - 或者 `python -m http.server 8000`，开 `http://localhost:8000`（走 `data/latest.json`）
+
+本机完整模式（含趋势与外推，只读本机、不联网）：
+
+```bat
+start.bat        :: 双击，自动启动本地服务并打开浏览器
+```
+
+打开 `http://127.0.0.1:8765/`。服务只绑定回环地址，局域网和外网都访问不到。
+`trend.html` 的近一周、近一月与线性外推由 `local/trend.py` 在本机计算，
+经 `/api/trend` 供页面读取。**当前五期快照的观测日都是 2026-11-06，按观测日去重后只有 1 个点，
+外推会据实显示「数据不足」，不画假曲线。** 等真实序列攒到 3 个以上不同观测日才出外推值。
+静态站点上的 `trend.html` 会提示改用本地服务。
 
 ---
 
@@ -56,6 +68,10 @@ data-needs.html                      数据需求清单（临时入口，字段�
 connect.html                         接入中心：授权说明 + 8 个渠道的条件与步骤 + 本机台账
                                      （localStorage，可导出 JSON）。台账只存本机，不上传；不收密钥
 security.html                        安全说明：凭证边界、页面请求行为与运维交接
+trend.html + trend.js                趋势预测：近一周/近一月、观测序列、线性外推（需本地服务）
+start.bat                            双击启动本地服务，绑定 127.0.0.1，自动开浏览器
+local/server.py                      本地服务：静态白名单 + /api/trend、/api/state、/api/health
+local/trend.py                       本机趋势计算：按观测日去重，不足 3 点拒绝外推
 access.html                          旧入口，跳转到 connect.html
 data/
   latest.json                        最新一份快照（真源）

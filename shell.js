@@ -7,6 +7,7 @@
   var MAIN = [
     ['home', '首页', 'index.html', ''],
     ['board', '看板', 'board.html', ''],
+    ['trend', '趋势预测', 'trend.html', '<span class="tmp">本机</span>'],
     ['report', '分析报告', 'report.html', ''],
     ['connect', '接入中心', 'connect.html', ''],
     ['security', '安全说明', 'security.html', ''],

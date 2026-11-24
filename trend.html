@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>趋势预测 · 码尺 CodeScale</title>
+<meta name="description" content="基于本机历史快照的近一周、近一月观察与线性外推。数据不足时据实标注，不以估算值替代。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body data-page="trend">
+<div id="side-slot"></div>
+<div class="main">
+
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>趋势预测</b></div>
+    <div class="stamp" id="stamp"><span class="pulse"></span><span>本机计算</span></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">TREND · 本机快照</div>
+      <h1>近期观察与外推</h1>
+      <div class="sub" id="sub">按观测日聚合本机历史快照。观测日不足时不做预测，缺口据实说明。</div>
+    </div>
+
+    <div id="mode-note"></div>
+
+    <section id="t-window">
+      <div class="sh"><span class="idx">01</span><h2>近一周 / 近一月</h2><span class="meta" id="win-meta"></span></div>
+      <p class="lead">按观测日而非运行日取窗口。同一批样本被重复运行多次，只算一个数据点，不计为新增。</p>
+      <div class="card">
+        <div class="win-grid">
+          <div><div class="win-h">近 7 天</div><div id="w7"></div></div>
+          <div><div class="win-h">近 30 天</div><div id="w30"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="t-series">
+      <div class="sh"><span class="idx">02</span><h2>观测序列</h2><span class="meta" id="ser-meta"></span></div>
+      <p class="lead">每个观测日一条，列出中位价与保本价以上占比。曲线只连接真实观测点，不补点。</p>
+      <div class="card"><div id="series"></div></div>
+    </section>
+
+    <section id="t-forecast">
+      <div class="sh"><span class="idx">03</span><h2>线性外推</h2><span class="meta" id="fc-meta"></span></div>
+      <p class="lead">方法为最小二乘线性拟合，区间取残差标准差。外推是算术延展，不是模型预测，也不构成定价建议。</p>
+      <div class="card"><div id="forecast"></div></div>
+    </section>
+
+    <section id="t-model">
+      <div class="sh"><span class="idx">04</span><h2>接入自有模型</h2><span class="meta">预留</span></div>
+      <p class="lead">本地版本只做确定性算术，不调用外部模型，不发送任何数据。模型接口位置在此预留，待数据源接通后再定。</p>
+      <div class="card" id="model"></div>
+    </section>
+
+    <footer id="foot"></footer>
+  </div>
+</div>
+
+<script src="trend.js"></script>
+<script src="shell.js"></script>
+</body>
+</html>
