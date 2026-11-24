@@ -40,7 +40,7 @@ python -m unittest discover -s pipeline/tests -v     # 34 个用例
 
 看页面两种方式：
 
-- 直接双击 `index.html`（`data/latest.js` 是镜像，专门给这种情况兜底）
+- 直接双击 `index.html`（首页）或 `board.html`（看板）；`data/latest.js` 是镜像，专门给这种情况兜底
 - 或者 `python -m http.server 8000`，开 `http://localhost:8000`（走 `data/latest.json`）
 
 ---
@@ -48,11 +48,15 @@ python -m unittest discover -s pipeline/tests -v     # 34 个用例
 ## 目录
 
 ```
-index.html  app.js  theme.css        前端。无依赖、无构建、无框架
-data-needs.html                      数据需求清单，可单独发给客户
-access.html                          接入说明与安全约定：使用者操作、权限范围与运维交接。纯说明，无表单
-connect.html                         渠道接入中心：8 个渠道的条件与步骤 + 本机台账（localStorage，
-                                     可导出 JSON）。台账只存本机，不上传；不收集密钥
+index.html  home.js                  首页：平台功能与模块入口
+board.html  app.js                   看板：行情 → 规格 → 盈亏 → 规模 → 敏感 → 对标 → 数据源 → 归档
+report.html  report.js               分析报告：按章节查看当期结论与明细表，按期下载 Word
+shell.js  theme.css                  全站左侧导航与样式。无依赖、无构建、无框架
+data-needs.html                      数据需求清单（临时入口，字段补齐后移除）
+connect.html                         接入中心：授权说明 + 8 个渠道的条件与步骤 + 本机台账
+                                     （localStorage，可导出 JSON）。台账只存本机，不上传；不收密钥
+security.html                        安全说明：凭证边界、页面请求行为与运维交接
+access.html                          旧入口，跳转到 connect.html
 data/
   latest.json                        最新一份快照（真源）
   latest.js                          file:// 兜底镜像
@@ -61,6 +65,7 @@ data/
 reports/
   YYYY-MM-DD.html                    当日日报（自包含，可直接微信发）
   YYYY-MM-DD.md                      微信短版
+  YYYY-MM-DD.docx                    Word 版，由 core/docx_report.py 生成，与 HTML 同源同口径
 pipeline/
   run.py                             入口：采集 → 归一 → 去重 → 指标 → 落盘 → 报告
   config.json                        品牌、成本、数据源清单
@@ -68,7 +73,8 @@ pipeline/
   core/normalize.py                  规格/品牌/去重键
   core/metrics.py                    指标计算
   core/store.py                      落盘
-  core/report.py                     日报渲染
+  core/report.py                     日报渲染（HTML / MD）
+  core/docx_report.py                Word 报告生成（python-docx，Actions 里需 pip install）
   sources/base.py                    适配器接口 + HTTP + 读凭据
   sources/seed.py                    本地样本（当前唯一有数的一路）
   sources/kalodata.py                Kalodata CSV 导入（inbox/）
