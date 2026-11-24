@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>接入说明与安全约定 · 码尺 CodeScale</title>
+<meta name="description" content="川哥需要做什么、授权时能看到什么、我们拿不到什么，以及内部交接的命令与凭证位置。本页不收集任何信息。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+<style>
+  .noform{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:13px 16px;
+    border:1px solid rgba(43,217,138,.3);background:rgba(43,217,138,.06);border-radius:10px;
+    font-size:12.5px;color:#b9e7d0}
+  .noform b{color:var(--down)}
+  .steps{display:flex;flex-direction:column;gap:12px}
+  .step{display:grid;grid-template-columns:38px 1fr;gap:14px;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+  .step .n{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+    background:rgba(124,92,255,.14);border:1px solid rgba(124,92,255,.35);
+    color:var(--acc);font-size:16px;font-weight:640;font-variant-numeric:tabular-nums}
+  .step h3{font-size:14px;font-weight:620;margin:1px 0 6px}
+  .step p{font-size:12.5px;color:var(--dim);line-height:1.75}
+  .step p b{color:var(--ink);font-weight:600}
+  code{font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+    background:#0e1018;border:1px solid var(--line);border-radius:5px;
+    padding:1px 6px;color:var(--acc2);white-space:nowrap}
+  pre{margin:10px 0 0;background:#0e1018;border:1px solid var(--line);border-radius:8px;
+    padding:12px 14px;overflow-x:auto}
+  pre code{background:none;border:0;padding:0;color:#cfd3e0;white-space:pre;display:block}
+  .badge{font-size:10px;letter-spacing:1px;color:var(--warn);border:1px solid rgba(240,166,0,.32);
+    background:rgba(240,166,0,.08);border-radius:5px;padding:2px 7px;font-weight:600}
+  .kv td:first-child{width:210px;color:var(--ink);font-weight:600}
+  .ok-t{color:var(--down)} .no-t{color:var(--up)}
+  ul.clean{list-style:none;margin:0;padding:0}
+  ul.clean li{font-size:12.5px;color:var(--dim);padding:7px 0 7px 20px;position:relative;line-height:1.7}
+  ul.clean li::before{content:"";position:absolute;left:2px;top:15px;width:6px;height:6px;
+    border-radius:50%;background:var(--acc)}
+  ul.clean li b{color:var(--ink);font-weight:600}
+  @media(max-width:760px){
+    .step{grid-template-columns:1fr;gap:8px}
+    .kv td:first-child{width:auto;display:block;padding-bottom:0;border-bottom:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="1.5" y="1.5" width="21" height="21" rx="6" stroke="#7c5cff" stroke-width="1.5"/>
+        <path d="M7 16.5V7.5h6.4L17 11.1v5.4z" stroke="#e9ebf2" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M9.6 11.2h2.2M9.6 13.6h4.2" stroke="#7c5cff" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span class="nm">码尺<em>CODESCALE</em></span>
+    </div>
+    <nav class="nav">
+      <a href="index.html">看板</a>
+      <a href="data-needs.html">数据需求</a>
+      <a href="reports/2026-11-20.html">日报样本</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">ACCESS &amp; HANDOFF · 巴西站</div>
+    <h1>接入说明与安全约定</h1>
+    <div class="sub">给川哥的部分看 01 和 02。交接的看 04。所有命令都在本机跑，这个网页只做说明。<b>它不收集任何东西。</b></div>
+  </div>
+
+  <div class="noform"><span>
+    <b>先说清楚</b>　这一页没有输入框，没有提交按钮，不会保存你填的任何东西。
+    账号、密码、token 一律不经过这个网页。要输密码，只输在美客多自己的官网。
+  </span></div>
+
+  <section>
+    <div class="sh"><span class="idx">01</span><h2>你只需要做两件事</h2><span class="meta">给川哥 · 约两分钟</span></div>
+    <p class="lead">其余全部由我们完成。你不用装软件，不用发账号密码给我们，也不用在任何表格里填 token。</p>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <div>
+          <h3>确认用哪个账号</h3>
+          <p>美客多开放平台需要一个美客多账号登录，用来建一个叫 <code>codescale</code> 的应用。用主店账号还是单独注册一个，你定。这一步决定后面所有授权归在谁名下，所以由你来定，我们不替你选。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <div>
+          <h3>点一次「同意授权」</h3>
+          <p>应用建好后，我们会给你一条<b>美客多官方授权链接</b>。你在浏览器打开，登录，看到应用 <code>codescale</code> 申请读取公开商品数据，点同意就结束了。</p>
+          <p>链接的域名是 <code>auth.mercadolivre.com.br</code>，不是我们的网站。<b>密码只输在美客多官网。</b>授权成功后，脚本在本机自动拿到凭据，你这边什么都不用发。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">02</span><h2>授权时能看见什么</h2><span class="meta">我们拿不到什么</span></div>
+    <p class="lead">把边界摆明，比让你盲点同意更稳妥。下面每一条都可以在授权页上核对。</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>项目</th><th>实际情况</th></tr></thead>
+        <tbody class="kv">
+          <tr><td>应用名</td><td><code>codescale</code>，码尺这一个项目，没有别的应用</td></tr>
+          <tr><td>申请的权限</td><td><code>read</code> 只读，加 <code>offline_access</code> 长期有效。后者只是免得每天重新授权，不是扩大读取范围。<span class="no-t">没有 write，没有写权限</span></td></tr>
+          <tr><td>你能读到的</td><td>巴西站公开商品的标题、标价、销量、上架时间、单品链接</td></tr>
+          <tr><td>我们读不到的</td><td class="no-t">店铺后台、订单明细、收款账户、广告花费、任何客户个人信息</td></tr>
+          <tr><td>你不需提供的</td><td class="no-t">店铺后台密码、订单导出、财务报表、合同原件</td></tr>
+          <tr><td>随时可撤销</td><td class="ok-t">在美客多后台取消授权即可，撤销后我们立刻失去读取能力</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">03</span><h2>我们的三条硬约定</h2><span class="meta">写在这里，出问题照此追责</span></div>
+    <div class="card">
+      <ul class="clean">
+        <li><b>不存明文密码。</b> Kalodata 那次登录，账号密码是我们自己在浏览器里输的，脚本不碰、不存、不传。只留浏览器的登录会话。</li>
+        <li><b>凭据只落本机。</b> token 存在跑脚本那台机器的 <code>~/.workbuddy/secrets/meli/</code>，不进网页、不进公开仓库、不发到任何聊天工具。</li>
+        <li><b>原始表不留副本。</b> 项目结束删除。报告里不出现客户个人信息，未经同意不对外讲。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">04</span><h2>内部交接</h2><span class="meta"><span class="badge">内部</span> 换人接手照这个走</span></div>
+    <p class="lead">这一段是给我们自己看的。命令都在本机执行，GitHub Actions 上没有浏览器会话，也没有 token，只负责发布。</p>
+
+    <div class="card" style="margin-bottom:12px">
+      <table>
+        <thead><tr><th>凭证</th><th>位置与说明</th></tr></thead>
+        <tbody class="kv">
+          <tr><td>美客多应用凭证</td><td><code>~/.workbuddy/secrets/meli/app.json</code>　App ID 与 Secret Key，两行 JSON</td></tr>
+          <tr><td>美客多 token</td><td><code>~/.workbuddy/secrets/meli/token.json</code>　脚本自动写，不手工改</td></tr>
+          <tr><td>Kalodata 会话</td><td><code>~/.workbuddy/secrets/kalodata/state.json</code>　浏览器登录态，不含密码</td></tr>
+          <tr><td>绝不进仓库</td><td class="no-t">以上三个目录都不在 <code>09_码尺平台/</code> 里，已被 <code>.gitignore</code> 排除</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="step" style="padding:0;border:0;background:none;grid-template-columns:1fr">
+        <div>
+          <h3>三步跑通</h3>
+          <p>前置：在 <code>developers.mercadolivre.com.br</code> 建应用，Redirect URI 填 <code>http://localhost:3333/callback</code>，Scope 勾 <code>read</code> 和 <code>offline_access</code>。</p>
+<pre><code>python pipeline/tools/meli_auth.py      # 浏览器点授权，token 自动落盘
+python pipeline/tools/meli_token.py     # 自动续期，access_token 6 小时、refresh 180 天
+python pipeline/tools/meli_probe.py     # 试拉巴西穿戴甲，看字段够不够定价</code></pre>
+          <p style="margin-top:12px">会话失效时，看「数据源健康」面板会变成 <code>blocked</code>，不会静默交空数据。重跑第一条即可。<code>python</code> 要用装了 playwright 的那个解释器，PowerShell 里的 <code>python</code> 可能指向 WindowsApps 的空壳。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><span class="idx">05</span><h2>现在做到哪一步</h2><span class="meta">不夸大</span></div>
+    <div class="card">
+      <ul class="clean">
+        <li><b>授权脚本写好了，没真跑过。</b> 只做过语法检查。没有 token 就走不到实拉那一步，拿到账号后才能验。</li>
+        <li><b>正式采集器还没写。</b> <code>fetch_mercadolivre</code> 现在是空壳，直接返回未配置。probe 验过字段之后我来补。</li>
+        <li><b>Kalodata 只是备选，不是主样本。</b> 试用版每天 10 条，且是 TikTok 数据、人民币计价，客户实际在美客多和 Shopee 卖。渠道不同，不能混进 n=75。</li>
+        <li><b>自动更新的真相。</b> 每天 20:00 任务确实在跑，但数据源没接进来时，<code>changed=False</code>，页面会照实提示「本版没有新数据」，不拿旧数冒充新数。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <b>本页</b>　不收集任何账号、密码、token。没有表单，没有提交，没有上报<br>
+    <b>更新</b>　2026-11-24 · 按 <code>meli_auth.py</code> 与现有凭证目录实况写<br>
+    <b>码尺 CodeScale</b>　跨境选品数据台
+  </footer>
+</div>
+
+</body>
+</html>
