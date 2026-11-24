@@ -31,10 +31,12 @@ python pipeline/run.py --dry        # 只打印不落盘
 改过 CSV 导入器之后跑一遍测试：
 
 ```bash
-python -m unittest discover -s pipeline/tests -v     # 41 个用例
+python -m unittest discover -s pipeline/tests -v              # 41 个用例：管线
+python -m unittest discover -s local -p tests_local.py -v     # 10 个用例：产品层
 ```
 
-测四块：巴西数字格式与三套表头、单品链接判定、变化检测的阈值边界、规模刻度的算术。
+管线测四块：巴西数字格式与三套表头、单品链接判定、变化检测的阈值边界、规模刻度的算术。
+产品层测五块：认证、演示源确定性、每日入库幂等、观测日去重后的外推、模型密钥掩码与回退。
 这些地方算错了不会报错，只会静默给出错的数，所以规则和断言都写死在代码与测试里，
 不靠运行时判断。改过任何一处都要重跑。
 
@@ -43,17 +45,29 @@ python -m unittest discover -s pipeline/tests -v     # 41 个用例
 - 直接双击 `index.html`（首页）或 `board.html`（看板）；`data/latest.js` 是镜像，专门给这种情况兜底
 - 或者 `python -m http.server 8000`，开 `http://localhost:8000`（走 `data/latest.json`）
 
-本机完整模式（含趋势与外推，只读本机、不联网）：
+本机完整模式（账号、每日更新、近窗、外推、自有模型，只读本机、不联网）：
 
 ```bat
 start.bat        :: 双击，自动启动本地服务并打开浏览器
 ```
 
 打开 `http://127.0.0.1:8765/`。服务只绑定回环地址，局域网和外网都访问不到。
-`trend.html` 的近一周、近一月与线性外推由 `local/trend.py` 在本机计算，
-经 `/api/trend` 供页面读取。**当前五期快照的观测日都是 2026-11-06，按观测日去重后只有 1 个点，
-外推会据实显示「数据不足」，不画假曲线。** 等真实序列攒到 3 个以上不同观测日才出外推值。
-静态站点上的 `trend.html` 会提示改用本地服务。
+
+**工作台（`app.html`）用法**
+
+1. 首次进入点「注册本机账号」，用用户名 + 至少 8 位密码注册。
+2. 登录后自动写入当天快照，随后可看当日状态、近一周、近一月、趋势外推。
+3. 「接入自有模型」填 OpenAI 兼容的 chat/completions 地址、模型名与密钥，服务端代为调用。
+   密钥只写本机 `runtime/model.json`，接口只回掩码；未配置或调用失败自动回退内置线性规则。
+4. 账号存 `runtime/accounts.json`（PBKDF2 加盐哈希，明文不落盘），会话令牌仅存服务端内存，进程重启即失效。
+
+**关于演示数据**：采集器尚未接通，工作台当前用 `local/feed.py` 的 DemoSource 以真实样本为基线、
+按日期确定性生成快照，界面全程标注「演示」，**不是真实市场观测**。这一步只验证产品链路。
+采集器接通后实现同样的 `Source.fetch(day)` 接口替换即可，页面与账号无需改动。
+
+趋势计算按观测日去重，不足 3 个不同观测日不做外推。真实历史 `data/history/` 五期观测日都是
+2026-11-06，去重后只有 1 个点，页面的真实口径仍显示「数据不足」，不画假曲线。
+静态站点上的 `trend.html`、`app.html` 会提示改用本地服务。
 
 ---
 
@@ -61,6 +75,7 @@ start.bat        :: 双击，自动启动本地服务并打开浏览器
 
 ```
 index.html  home.js                  首页：平台功能与模块入口
+app.html  workbench.js               工作台：登录、当日更新、近窗、外推、自有模型（需本地服务）
 board.html  app.js                   看板：行情 → 规格 → 盈亏 → 规模 → 敏感 → 对标 → 数据源 → 归档
 report.html  report.js               分析报告：按章节查看当期结论与明细表，按期下载 Word
 shell.js  theme.css                  全站左侧导航与样式。无依赖、无构建、无框架
@@ -70,8 +85,12 @@ connect.html                         接入中心：授权说明 + 8 个渠道�
 security.html                        安全说明：凭证边界、页面请求行为与运维交接
 trend.html + trend.js                趋势预测：近一周/近一月、观测序列、线性外推（需本地服务）
 start.bat                            双击启动本地服务，绑定 127.0.0.1，自动开浏览器
-local/server.py                      本地服务：静态白名单 + /api/trend、/api/state、/api/health
+local/server.py                      本地服务：静态白名单 + 鉴权 + /api/app/*、/api/model/*、/api/auth/*
 local/trend.py                       本机趋势计算：按观测日去重，不足 3 点拒绝外推
+local/auth.py                        本机账号：PBKDF2 加盐哈希、会话令牌，存 runtime/
+local/feed.py                        数据源适配器 + 演示源 DemoSource + 每日入库，存 local/history/
+local/model.py                       自有模型适配器：服务端代调、密钥掩码、失败回退内置规则
+local/tests_local.py                 产品层测试：认证、演示源、入库、趋势、模型回退
 access.html                          旧入口，跳转到 connect.html
 data/
   latest.json                        最新一份快照（真源）

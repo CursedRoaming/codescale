@@ -6,6 +6,7 @@
   ];
   var MAIN = [
     ['home', '首页', 'index.html', ''],
+    ['app', '工作台', 'app.html', '<span class="tmp">本机</span>'],
     ['board', '看板', 'board.html', ''],
     ['trend', '趋势预测', 'trend.html', '<span class="tmp">本机</span>'],
     ['report', '分析报告', 'report.html', ''],

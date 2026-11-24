@@ -8,6 +8,10 @@ pipeline/inbox/*.csv
 # 探查后台留下的截图与报告，只在本机看
 pipeline/tools/_probe/
 
+# 本机运行产物：账号哈希、模型密钥、演示快照，均不进版本库
+runtime/
+local/history/
+
 # Python
 __pycache__/
 *.pyc

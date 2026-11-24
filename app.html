@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>工作台 · 码尺 CodeScale</title>
+<meta name="description" content="本机工作台：账号登录、每日更新、近期窗口、趋势外推与自有模型接入。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><path d='M9 22V10h9l5 5v7z' fill='none' stroke='%23fff' stroke-width='2'/></svg>">
+<link rel="stylesheet" href="theme.css">
+<style>
+.wk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.wk-kpi{border:1px solid var(--line);border-radius:9px;padding:14px 16px;background:var(--panel)}
+.wk-kpi .k{font-size:10.5px;color:var(--dim2);letter-spacing:.4px}
+.wk-kpi .v{font-size:21px;font-weight:650;margin-top:6px;font-variant-numeric:tabular-nums}
+.wk-kpi .n{font-size:10.5px;color:var(--dim2);margin-top:3px}
+.wk-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+pre.ser{font:11px/1.7 ui-monospace,Consolas,monospace;color:var(--dim);background:#0e1018;border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;margin:0}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.fld label{font-size:11px;color:var(--dim2)}
+.fld input{background:#0e1018;border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:9px 11px;font:12px inherit;font-family:inherit;outline:none}
+.fld input:focus{border-color:var(--acc)}
+.badge{display:inline-block;font-size:10px;border-radius:4px;padding:2px 7px;border:1px solid var(--line);color:var(--dim2)}
+.badge.warn{color:var(--warn);border-color:rgba(240,166,0,.35)}
+.badge.ok{color:#67d6a0;border-color:rgba(103,214,160,.35)}
+#loginbox{max-width:420px;margin:48px auto}
+#loginbox .card{padding:24px}
+.tip{font-size:11.5px;color:var(--dim2);line-height:1.8}
+@media(max-width:960px){.wk-grid{grid-template-columns:repeat(2,1fr)}.wk-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-page="app">
+<div id="side-slot"></div>
+<div class="main">
+
+  <div class="bar"><div class="bar-in">
+    <div class="crumb">码尺 CodeScale　/　<b>工作台</b></div>
+    <div class="stamp" id="stamp"><span class="pulse"></span><span>仅本机</span></div>
+  </div></div>
+
+  <div class="wrap">
+
+    <!-- 未登录 -->
+    <div id="loginbox" style="display:none">
+      <div class="eyebrow">LOCAL WORKSPACE</div>
+      <h1>本机工作台</h1>
+      <div class="sub">账号只存本机。登录即更新当天快照，随后可查看近期窗口、外推与自有模型接入。</div>
+      <div class="card" style="margin-top:18px">
+        <div class="fld"><label>用户名</label><input id="lu" autocomplete="username" placeholder="3–32 位字母数字或下划线"></div>
+        <div class="fld"><label>密码</label><input id="lp" type="password" autocomplete="current-password" placeholder="至少 8 位"></div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button class="btn main" id="btn-login">登录</button>
+          <button class="btn" id="btn-reg">注册本机账号</button>
+        </div>
+        <p class="tip" id="lmsg" style="margin-top:14px"></p>
+      </div>
+      <p class="tip" style="margin-top:14px">本页不向外部上传任何填写内容。密码以加盐哈希存于本机，明文不落盘。</p>
+    </div>
+
+    <!-- 已登录 -->
+    <div id="workspace" style="display:none">
+      <div class="hero">
+        <div class="eyebrow">LOCAL WORKSPACE · <span id="who"></span></div>
+        <h1>工作台</h1>
+        <div class="sub">登录当天自动更新一条快照。下方窗口与外推基于本机历史，来源逐项标注。</div>
+      </div>
+
+      <div id="banner"></div>
+
+      <div class="wk-grid" id="kpis" style="margin-top:16px"></div>
+
+      <section id="w-feed" style="margin-top:26px">
+        <div class="sh"><span class="idx">01</span><h2>当日更新</h2><span class="meta" id="feed-meta"></span></div>
+        <div class="card">
+          <div class="tip" id="feed-line"></div>
+          <div style="margin-top:12px"><button class="btn" id="btn-refresh">立即更新当天</button></div>
+        </div>
+      </section>
+
+      <section id="w-window">
+        <div class="sh"><span class="idx">02</span><h2>近一周 / 近一月</h2><span class="meta" id="win-meta"></span></div>
+        <div class="card"><div class="wk-2"><div><div class="win-h">近 7 天</div><div id="w7"></div></div><div><div class="win-h">近 30 天</div><div id="w30"></div></div></div></div>
+      </section>
+
+      <section id="w-trend">
+        <div class="sh"><span class="idx">03</span><h2>趋势与外推</h2><span class="meta" id="tr-meta"></span></div>
+        <p class="lead">观测日去重后做线性外推；另有自有模型结果，二者来源分开标注，不混为一谈。</p>
+        <div class="card"><div class="wk-2"><div><div class="win-h">内置线性外推</div><div id="fc-builtin"></div></div><div><div class="win-h">预测结果</div><div id="fc-model"></div></div></div>
+          <div style="margin-top:14px"><pre class="ser" id="series"></pre></div>
+        </div>
+      </section>
+
+      <section id="w-model">
+        <div class="sh"><span class="idx">04</span><h2>接入自有模型</h2><span class="meta" id="model-meta"></span></div>
+        <p class="lead">填写兼容接口地址、密钥与模型名，服务端代为调用，密钥不回显。未配置或调用失败时自动回退到内置规则。</p>
+        <div class="card">
+          <div class="fld"><label>接口地址（OpenAI 兼容 chat/completions）</label><input id="me" placeholder="https://…/v1/chat/completions"></div>
+          <div class="fld"><label>模型名</label><input id="mm" placeholder="模型标识"></div>
+          <div class="fld"><label>密钥（只写本机，保存后仅显示掩码）</label><input id="mk" type="password" placeholder="留空表示保留原值"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn main" id="btn-model-save">保存配置</button>
+            <button class="btn" id="btn-model-clear">清除配置</button>
+            <button class="btn" id="btn-model-test">用新配置试算</button>
+          </div>
+          <p class="tip" id="model-msg" style="margin-top:12px"></p>
+        </div>
+      </section>
+
+      <section id="w-about">
+        <div class="sh"><span class="idx">05</span><h2>数据边界</h2></div>
+        <div class="card"><p class="tip">
+          当前演示快照由本机基线按日期确定性生成，界面已标「演示」，不代表真实市场观测。
+          账号、模型配置、历史快照均存本机，不进公开仓库、不上报。
+          采集器接通后，替换数据源适配器即可，页面与账号无需改动。
+        </p></div>
+      </section>
+
+      <footer>
+        <b>范围</b>　仅 127.0.0.1，外网不可访问<br>
+        <b>更新</b>　2026-11-24 · 产品层先于采集器完成<br>
+        <b>码尺 CodeScale</b>　跨境选品数据台
+      </footer>
+    </div>
+
+  </div>
+</div>
+
+<script src="workbench.js"></script>
+<script src="shell.js"></script>
+</body>
+</html>
