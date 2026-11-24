@@ -51,37 +51,36 @@
 
   <section id="s-bands">
     <div class="sh"><span class="idx">01</span><h2>价格带分布</h2><span class="meta" id="bands-meta"></span></div>
-    <p class="lead">按挂牌价分档。深色档位整体站在不投流保本线之上，是当前唯一能自负盈亏的价格区。</p>
+    <p class="lead">按挂牌价分档。深色档位均高于不投流保本价，属于当前可实现盈亏平衡的价格区间。</p>
     <div class="card"><div id="bands"></div><div class="axis" id="axis"></div></div>
   </section>
 
   <section id="s-spec">
     <div class="sh"><span class="idx">02</span><h2>规格与分层</h2><span class="meta" id="spec-meta"></span></div>
-    <p class="lead">同名「穿戴甲」在巴西实际是三个不同生意：24 片机器甲走量、品牌款吃溢价、手工定制做单价。混在一起算中位价没有意义。</p>
+    <p class="lead">巴西市场的「穿戴甲」包含三个细分：24 片机器甲、品牌款与手工定制款。三者定价逻辑不同，合并计算中位价不具参考意义。</p>
     <div class="card"><div id="specs"></div><div id="tiers" style="margin-top:22px"></div></div>
   </section>
 
   <section id="s-econ">
     <div class="sh"><span class="idx">03</span><h2>单副盈亏刻度</h2><span class="meta" id="econ-meta"></span></div>
-    <p class="lead">到仓成本固定，费率按售价比例抽成，所以净利不是线性的低斜率，是一条从零开始下切的直线。与零轴的交点就是保本价。</p>
+    <p class="lead">到仓成本固定，费率按售价比例计提，因此净利与售价呈线性关系。曲线与零轴的交点即为保本价。</p>
     <div class="card"><div id="econ-chart"></div><div id="econ-table" style="margin-top:18px"></div></div>
   </section>
 
   <section id="s-scale">
     <div class="sh"><span class="idx">04</span><h2>规模刻度</h2><span class="meta" id="scale-meta"></span></div>
-    <p class="lead">单件净利决定要卖多少单才够一个目标月利。到仓成本固定，费率按售价比例抽，
-      所以定价差几块，所需单量差几十倍。横轴单量是假设，不是预测。</p>
+    <p class="lead">单件净利决定达到目标月净利所需的销量。到仓成本固定、费率按售价比例计提，因此定价的少量变化会显著影响所需单量。横轴单量为假设值，不构成预测。</p>
     <div class="card">
       <div id="scale-lead"></div>
       <div id="scale-grid" style="margin-top:18px"></div>
-      <div class="lead" style="margin:20px 0 10px">要拿到目标月净利，各价位分别需要多少单：</div>
+      <div class="lead" style="margin:20px 0 10px">达到目标月净利所需单量，按价位列示：</div>
       <div id="scale-need"></div>
     </div>
   </section>
 
   <section id="s-sens">
     <div class="sh"><span class="idx">05</span><h2>成本敏感性</h2><span class="meta" id="sens-meta"></span></div>
-    <p class="lead">每个成本项单独动一成，保本线跟着挪多少。用途只有一个：排优先级，先盯哪一项。</p>
+    <p class="lead">各成本项单独变动 10% 时保本价的对应变化。该表用于确定成本管控的优先顺序。</p>
     <div class="card">
       <div id="sens-lead"></div>
       <div id="sens-table" style="margin-top:18px"></div>
@@ -90,25 +89,25 @@
 
   <section id="s-comp">
     <div class="sh"><span class="idx">06</span><h2>手工款对标</h2><span class="meta" id="comp-meta"></span></div>
-    <p class="lead">自家产品是 10 片手工甲。这里只放同一类的东西，其余样本一律不参与对比。</p>
+    <p class="lead">对标产品为 10 片手工甲。本节仅纳入同类样本，其他规格不参与对比。</p>
     <div class="card" id="comp"></div>
   </section>
 
   <section id="s-src">
     <div class="sh"><span class="idx">07</span><h2>数据源健康</h2><span class="meta" id="src-meta"></span></div>
-    <p class="lead">状态是事实，不是故障报告。没接上的写没接上，被拦的写被拦，不拿旧数据冒充新数据。</p>
+    <p class="lead">数据源状态按实际情况展示。未接入、被拦截等状态均如实标注，历史数据不标记为最新。</p>
     <div class="card" id="srcs"></div>
     <div id="warn"></div>
     <p style="margin-top:14px;color:#8b91a8">
-      还缺哪些数据、每项用来回答什么问题：<a href="data-needs.html">数据需求清单 →</a><br>
-      川哥要做什么、token 存在哪、换人怎么交接：<a href="access.html">接入说明与安全约定 →</a><br>
-      有哪些渠道可选、每个渠道怎么接、自己记进度：<a href="connect.html">渠道接入中心 →</a>
+      各项数据的用途与缺失影响：<a href="data-needs.html">数据需求清单 →</a><br>
+      授权流程、权限范围与凭证管理：<a href="access.html">接入说明与安全约定 →</a><br>
+      可选渠道、接入条件与进度记录：<a href="connect.html">渠道接入中心 →</a>
     </p>
   </section>
 
   <section id="s-runs">
     <div class="sh"><span class="idx">08</span><h2>运行归档</h2><span class="meta" id="runs-meta"></span></div>
-    <p class="lead">每天一份不可变快照。报告一旦发出，数字就不再变。</p>
+    <p class="lead">每日生成一份不可变快照。报告发布后，其中数据不再变更。</p>
     <div class="card"><div class="runs" id="runs"></div></div>
   </section>
 
